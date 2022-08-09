@@ -1,11 +1,16 @@
 import AndroidTrustMatrix.db
+import AndroidTrustMatrix.config as Config
 
 class App():
     def __init__(self):
-        self.db = db.db
-        self.db.Connect("x","y","z","a")
+        print("Initialising DB")
+        username,password,host,port,database = Config.get_db_config()
+        self.db = AndroidTrustMatrix.db.db()
+        self.db.Connect(username,password,host,port,database)
+        self.Markets = self.db.Get_Markets()
         return
 
-    def run():
+    def run(self):
         print("Running")
+        print(self.Markets)
 
