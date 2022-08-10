@@ -59,6 +59,10 @@ class db():
         print(f"New Company Score {Tcompany} for {market}")
         return
 
+    def Update_DomainScore(self,market,Tdomain):
+        print(f"New Domain Score {Tdomain} for {market}")
+        return
+
     def Disconnect(self):
         if(self.db):
             self.db.close()
