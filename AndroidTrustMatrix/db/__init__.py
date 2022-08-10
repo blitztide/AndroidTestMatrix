@@ -57,10 +57,29 @@ class db():
     
     def Update_CompanyScore(self,market,Tcompany):
         print(f"New Company Score {Tcompany} for {market}")
+        cursor = self.db.cursor()
+        query = f"UPDATE Marketplace SET CompanyScore = {int(Tcompany)} WHERE MarketID={market.id}"
+        cursor.execute(query)
+        cursor.close()
         return
 
     def Update_DomainScore(self,market,Tdomain):
         print(f"New Domain Score {Tdomain} for {market}")
+        cursor = self.db.cursor()
+        query = f"UPDATE Marketplace SET DomainScore = {int(Tdomain)} WHERE MarketID={market.id}"
+        cursor.execute(query)
+        cursor.close()
+        return
+    
+    def Update_MarketScore(self,market,Tmarket):
+        print(f"New Market Score {Tmarket} for {market}")
+        cursor = self.db.cursor()
+        query = f"UPDATE Marketplace SET CompanyScore = {int(Tmarket)} WHERE MarketID={market.id}"
+        cursor.execute(query)
+        cursor.close()
+        return
+
+    def Add_Certificate(self,domain,certificate,fingerprint):
         return
 
     def Disconnect(self):
@@ -69,4 +88,5 @@ class db():
     
     def __del__(self):
         if (self.db):
+            self.db.commit()
             self.db.close()

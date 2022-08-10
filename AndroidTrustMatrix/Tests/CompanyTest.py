@@ -3,6 +3,9 @@ class CompanyTest(BaseTest):
     """Class for holding and running Company Tests"""
     def __init__(self,db):
         super(CompanyTest,self).__init__(db)
+        #Modify these to Adjust sigmoid
+        #self.k =  0.0030099
+        #self.Thalf = 1095
 
     def Run(self,Market):
         print(f"Running CompanyTest on {Market}")

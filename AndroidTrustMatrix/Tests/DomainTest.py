@@ -1,32 +1,39 @@
 import re
 import socket
 import datetime
+import dns.resolver
 from datetime import datetime
 
 from AndroidTrustMatrix.Tests import BaseTest
+from AndroidTrustMatrix.Tests.CryptoTest import CryptoTest
 
 class DomainTest(BaseTest):
     """Class for holding and running Domain Tests"""
     def __init__(self,db):
         super(DomainTest,self).__init__(db)
+        #Modify these to Adjust sigmoid
+        #self.k =  0.0030099
+        #self.Thalf = 1095
     
     def Run(self, Market):
         db = self.db
         print(f"Running DomainTest on {Market}")
-        protocol = re.findall("(http|https)",Market.domain)
-        domain = re.findall(":\/\/([A-Za-z0-9\-\.]+)",Market.domain)
-        domain = domain[0]
+        protocol = re.findall("https?",Market.domain)[0]
+        domain = re.findall(":\/\/([A-Za-z0-9\-\.]+)",Market.domain)[0]
         print(domain)
         Tage = self.CheckAge(domain)
         Tcrypto = 0
         if(protocol == "https"):
-            Tcrypto = self.CheckSSL(Market.domain)
+            Tcrypto = self.CheckSSL(domain)
+            Tcrypto = 1
         Tc2 = self.CheckC2(domain)
         Tdomain = self.CalculateScore(Tc2,Tcrypto,Tage)
         db.Update_DomainScore(Market,Tdomain)
     
     def CheckSSL(self,domain):
-        return 0
+        test = CryptoTest(self.db)
+        Tssl = test.run(domain)
+        return Tssl
 
     def CheckAge(self,domain):
         whois = self.Whois(domain)
@@ -53,13 +60,21 @@ class DomainTest(BaseTest):
 
     def CalculateScore(self,Tc2,Tcrypto,Tage):
         # Scaling factors
-        a = 1
-        b = 1
+        a = 5
+        b = 5
         Tdomain = Tc2 * ((a * Tage) + (b*Tcrypto))
         return Tdomain
     
     def CheckC2(self,domain):
-        return 1
+        """Simple check if quad-9 returns value"""
+        resolver = dns.resolver.Resolver()
+        resolver.nameservers=['9.9.9.9']
+        answer = resolver.query(domain)
+        print(f"Domain query {answer}")
+        if answer:
+            return 1
+        else:
+            return 0
 
 
     def Whois(self, Domain):
