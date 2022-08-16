@@ -1,3 +1,4 @@
+from datetime import datetime
 from AndroidTrustMatrix.Tests import BaseTest
 class CompanyTest(BaseTest):
     """Class for holding and running Company Tests"""
@@ -35,5 +36,13 @@ class CompanyTest(BaseTest):
         return Treg,Tage
     
     def Test_Incidents(self,incidents):
-        return 0
+        OneYear = 365
+        today = datetime.today()
+        returnval = 0
+        for incident in incidents:
+            incidentdate = datetime.strptime(incident["IncidentDate"],"%Y-%m-%d %H:%M:%S")
+            timediff = incidentdate - today
+            if timediff.days > OneYear:
+                returnval = True
+        return returnval
     

@@ -1,5 +1,6 @@
 import datetime
 import MySQLdb as my
+from MySQLdb.cursors import DictCursor
 import AndroidTrustMatrix.Marketplaces as MP
 import AndroidTrustMatrix.Domains as DM
 
@@ -50,8 +51,8 @@ class db():
     def Get_Incidents(self,company):
         """Returns a list of incidents for a given company"""
         incidents = []
-        cursor = self.db.cursor()
-        cursor.execute(f"SELECT * FROM Incidents WHERE Company = {company}")
+        cursor = self.db.cursor(my.cursors.DictCursor)
+        cursor.execute(f"SELECT IncidentDate FROM Incidents WHERE Company = {company}")
         incidents = cursor.fetchall()
         return incidents
     
