@@ -1,59 +1,85 @@
+import importlib
 from re import T
 from AndroidTrustMatrix.Tests import BaseTest
+from AndroidTrustMatrix.Tests.MalwareTest import MalwareTest
+from AndroidTrustMatrix.util import eprint
+import AndroidTrustMatrix.config as Config
+
 class MarketTest(BaseTest):
     """Class for holding and running Market Tests"""
-    def __init__(self,db):
+    def __init__(self,db,applist):
         super(MarketTest,self).__init__(db)
+        self.searchapps = applist
         self.availableapps = [] # List of pkg_names
+        self.proxy = Config.get_proxy_config()
     
     def Run(self, Market):
-        db = self.db
         print(f"Running MarketTest on {Market}")
         # Load Module for market
         MarketModule = self.ImportModule(Market)
-        # Check availability
-        Tavail = self.CalculateAvailability(MarketModule)
-        Tmalware = self.MalwareTest(MarketModule)
-        Tuptime = self.CalculateUptime(Market)
-        Tmarket = self.CalculateScore(Tuptime,Tavail,Tmalware)
-        db.Update_MarketScore(Market,Tmarket)
-        #Unload module
-        del(MarketModule)
+        if MarketModule != None:
+            # Check availability
+            Tavail = self.CalculateAvailability(MarketModule)
+            Tmalware = self.MalwareCheck(MarketModule)
+            Tuptime = self.CalculateUptime(Market)
+            Tmarket = self.CalculateScore(Tuptime,Tavail,Tmalware)
+            self.db.Update_MarketScore(Market,Tmarket)
+            #Unload module
+            del(MarketModule)
 
     
     def ImportModule(self,Market):
         print(f"Loading Module mkt_{Market}")
-        importstr = f"mkt_{Market}"
+        importstr = f"AndroidTrustMatrix.Tests.Markets.mkt_{Market}"
         try:
-            module = __import__(importstr)
+            module = importlib.import_module(importstr)
             return module
         except:
-            print(f"Unable to import {importstr}")
+            eprint(f"Unable to import {importstr}")
         return None
 
     def CalculateAvailability(self,MarketClass):
-        # Search for top 1000 apps:
         # appcount = 0
         # For application in applicationlist:
         #   exists = module[Market].search()
         #   appcount += exists
         # Tavail = appcount/TotalApps
         # return Tavail
-        return 0
+        appcount = 0
+        totalapps = 0
+        for application in self.searchapps:
+            totalapps += 1
+            if MarketClass.Search(application):
+                self.availableapps += application
+                appcount += 1
+        Tavail = appcount/totalapps
+        return Tavail
 
-    def MalwareTest(self, MarketClass):
+    def MalwareCheck(self, MarketClass):
         # foreach apk in self.availableapps
         # Download()
-        #   Check filehash
-        #   Lookup in our own database (if found tag as such)
-        #   If not found, check VT
-        #   If not found, check ClamAV
-        #   If not found, upload to VT
-        #   Check VT again
-        #   Tag application in database
+        #   Run Malware engine on file
         # Calculate percentage of applications with malware
         # Return Tmalware
-        return 0
+        malwaretest = MalwareTest(self.db,self.availableapps)
+        Checked = 0
+        Malicious = 0
+        Tmalware = 0
+        for application in self.availableapps:
+            Checked += 1
+            apk = MarketClass.Download(application)
+            if apk != None:
+                Result = malwaretest.Run(apk)
+                exists = self.db.CheckExists(Result)
+                if not exists:
+                    self.db.AddApplication(Result)
+                if Result["isMalware"]:
+                    Malicious += 1
+        try:
+            Tmalware = Malicious/Checked
+        except:
+            Tmalware = 1
+        return Tmalware
 
     def CalculateUptime(self,market):
         db = self.db

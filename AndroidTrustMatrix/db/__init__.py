@@ -8,6 +8,7 @@ class db():
     """db class abstracts all db functionality"""
 
     def Connect(self,username, password, host, port, database):
+        """Initialise connection to database"""
         self.db = my.connect(host,username,password,database)
         print(f'Connected: {username}@{host}:{port}/{database}')
 
@@ -57,6 +58,7 @@ class db():
         return incidents
     
     def Update_CompanyScore(self,market,Tcompany):
+        """Update database with new CompanyScore"""
         print(f"New Company Score {Tcompany} for {market}")
         cursor = self.db.cursor()
         query = f"UPDATE Marketplace SET CompanyScore = {int(Tcompany)} WHERE MarketID={market.id}"
@@ -65,6 +67,7 @@ class db():
         return
 
     def Update_DomainScore(self,market,Tdomain):
+        """Update database with new DomainScore"""
         print(f"New Domain Score {Tdomain} for {market}")
         cursor = self.db.cursor()
         query = f"UPDATE Marketplace SET DomainScore = {int(Tdomain)} WHERE MarketID={market.id}"
@@ -73,6 +76,7 @@ class db():
         return
     
     def Update_MarketScore(self,market,Tmarket):
+        """Update database with new MarketScore"""
         print(f"New Market Score {Tmarket} for {market}")
         cursor = self.db.cursor()
         query = f"UPDATE Marketplace SET CompanyScore = {int(Tmarket)} WHERE MarketID={market.id}"
@@ -81,9 +85,15 @@ class db():
         return
 
     def Add_Certificate(self,domain,certificate,fingerprint):
+        """Add a found certificate to the database"""
+        return
+
+    def Add_Application(self,pkg_name,version,isMalware,md5sum,sha1sum,sha256sum,appDate,AddedDate):
+        """Add a found application to the database"""
         return
 
     def Disconnect(self):
+        """Close connection to database"""
         if(self.db):
             self.db.close()
     
