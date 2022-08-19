@@ -29,7 +29,8 @@ class MarketTest(BaseTest):
 
     
     def ImportModule(self,Market):
-        print(f"Loading Module mkt_{Market}")
+        """Dynamically import market modules"""
+        # print(f"Loading Module mkt_{Market}")
         importstr = f"AndroidTrustMatrix.Tests.Markets.mkt_{Market}"
         try:
             module = importlib.import_module(importstr)

@@ -20,12 +20,10 @@ class DomainTest(BaseTest):
         print(f"Running DomainTest on {Market}")
         protocol = re.findall("https?",Market.domain)[0]
         domain = re.findall(":\/\/([A-Za-z0-9\-\.]+)",Market.domain)[0]
-        print(domain)
         Tage = self.CheckAge(domain)
         Tcrypto = 0
         if(protocol == "https"):
             Tcrypto = self.CheckSSL(domain)
-            Tcrypto = 1
         Tc2 = self.CheckC2(domain)
         Tdomain = self.CalculateScore(Tc2,Tcrypto,Tage)
         db.Update_DomainScore(Market,Tdomain)
@@ -69,11 +67,11 @@ class DomainTest(BaseTest):
         """Simple check if quad-9 returns value"""
         resolver = dns.resolver.Resolver()
         resolver.nameservers=['9.9.9.9']
-        answer = resolver.query(domain)
-        print(f"Domain query {answer}")
-        if answer:
+        try:
+            # resolve raises exception if cannot resolve
+            answer = resolver.resolve(domain,"A")
             return 1
-        else:
+        except:
             return 0
 
 

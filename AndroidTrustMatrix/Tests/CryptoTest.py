@@ -1,30 +1,75 @@
-import ssl
+import socket
 from OpenSSL.crypto import load_certificate, FILETYPE_PEM
+from OpenSSL import SSL
+import re
 
 from AndroidTrustMatrix.Tests import BaseTest
 class CryptoTest(BaseTest):
     def __init__(self,db):
         super()
         self.db = db
+
     def run(self,domain):
-        certificate = self.get_certificate(domain)
-        return 1
+        """Enumerate SSL for Domain"""
+        Certificate = self.get_certificate(domain)
+        Tcert = self.get_policy_score(Certificate)
+        Ttls = self.get_SSL_Score(domain)
+        Tssl = 5
+        Tcrypto = (Tssl + Ttls + Tcert)/10
+        return Tcrypto
     
     def get_certificate(self,domain):
-        context = ssl.create_default_context()
-        certificate_der = ssl.get_server_certificate((domain,443))
-        try:
-            certificate = load_certificate(FILETYPE_PEM,certificate_der)
-            fingerprint = certificate.digest("sha1")
-            extensions = certificate.get_extension_count()
-            for extension in range(extensions):
-                data = certificate.get_extension(extension)
-                if data.get_short_name() == b'certificatePolicies':
-                    print(data)
-            self.db.Add_Certificate(domain,certificate,fingerprint)
-            return certificate
-        except:
-            return None
+        """Get SSL Server certificate presented to us"""
+        # Create SSL context
+        context = SSL.Context(SSL.TLS_CLIENT_METHOD)
+        #context.set_verify(SSL.VERIFY_PEER)
+        # Create an SSL connection
+        sock = socket.socket()
+        SSL_Sock = SSL.Connection(context, sock)
+        SSL_Sock.set_tlsext_host_name(domain.encode()) # SNI Support
+        SSL_Sock.connect((domain,443))
+        SSL_Sock.do_handshake()
+
+        certificate = SSL_Sock.get_peer_certificate()
+        sock.close()
+        fingerprint = certificate.digest("sha1")
+        self.db.Add_Certificate(domain,certificate,fingerprint)
+        return certificate
+        
+    def get_SSL_Score(self,domain):
+         # Create SSL context
+        context = SSL.Context(SSL.TLS_CLIENT_METHOD)
+        #context.set_verify(SSL.VERIFY_PEER)
+        # Create an SSL connection
+        sock = socket.socket()
+        SSL_Sock = SSL.Connection(context, sock)
+        SSL_Sock.set_tlsext_host_name(domain.encode()) # SNI Support
+        SSL_Sock.connect((domain,443))
+        SSL_Sock.do_handshake()
+        version = SSL_Sock.get_protocol_version_name()
+        Tssl = 0
+        if not version == "Unknown":
+            if version == "TLSv1.1":
+                Tssl = 1
+            if version == "TLSv1.2":
+                Tssl = 1
+            if version == "TLSv1.3":
+                Tssl = 2
+        sock.close()
+        return Tssl
     
-    def get_SSLVersion():
-        return
+    def get_policy_score(self,Certificate):
+        Tcert = 0
+        extensions = Certificate.get_extension_count()
+        for extension in range(extensions):
+            data = Certificate.get_extension(extension)
+            if data.get_short_name() == b'certificatePolicies':
+                policy = re.findall("(2\.23\.140\.1\.2\.[1-3])",data.__str__())
+                if not policy == None:
+                    if policy == "2.23.140.1.2.1":
+                        Tcert = 1
+                    if policy == "2.23.140.1.2.2":
+                        Tcert = 2
+                    if policy == "2.23.140.1.2.3":
+                        Tcert = 3
+        return Tcert
