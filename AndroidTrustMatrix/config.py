@@ -19,3 +19,7 @@ def get_proxy_config():
 def get_repo_dir():
     repodir = config.get('repo','repodir')
     return repodir
+
+def get_clam_socket():
+    socketadd = config.get('clamav','unixsock')
+    return socketadd
