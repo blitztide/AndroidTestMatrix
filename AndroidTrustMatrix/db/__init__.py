@@ -79,17 +79,19 @@ class db():
         """Update database with new MarketScore"""
         print(f"New Market Score {Tmarket} for {market}")
         cursor = self.db.cursor()
-        query = f"UPDATE Marketplace SET CompanyScore = {int(Tmarket)} WHERE MarketID={market.id}"
+        query = f"UPDATE Marketplace SET MarketScore = {int(Tmarket)} WHERE MarketID={market.id}"
         cursor.execute(query)
         cursor.close()
         return
 
     def Add_Certificate(self,domain,certificate,fingerprint):
         """Add a found certificate to the database"""
+        print(f"New Certificate {domain},{fingerprint}")
         return
 
     def Add_Application(self,pkg_name,version,isMalware,md5sum,sha1sum,sha256sum,appDate,AddedDate):
         """Add a found application to the database"""
+        print(f"New Application {pkg_name},{isMalware}")
         return
 
     def Disconnect(self):

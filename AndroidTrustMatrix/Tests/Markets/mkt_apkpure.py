@@ -1,5 +1,8 @@
+url = "https://apkpure.com/search?q={}"
+
 def Search(app):
     """Search for app in store and return True if available"""
+    print("Unable to Download, Cloudflare")
     return False
 
 def Download(app):

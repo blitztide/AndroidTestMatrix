@@ -15,3 +15,7 @@ def get_db_config():
 def get_proxy_config():
     proxy = config.get('proxy','proxies')
     return proxy
+
+def get_repo_dir():
+    repodir = config.get('repo','repodir')
+    return repodir

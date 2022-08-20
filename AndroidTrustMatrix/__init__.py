@@ -32,6 +32,7 @@ class App():
         db = self.db
         print("Running")
         apps = self.SelectApps(self.appchecks)
+        print(apps)
         markettest = MarketTest.MarketTest(db,apps)
         domaintest = DomainTest.DomainTest(db)
         companytest = CompanyTest.CompanyTest(db)
@@ -43,11 +44,11 @@ class App():
     def SelectApps(self,n):
         """Select n random apps and return a list of pkg_names"""
         apps = []
-        with open("config/apps") as fp:
-            for line in fp:
-                apps += line
+        fp =  open("config/apps")
+        for line in fp.readlines():
+                apps.append(line.strip())
         random.shuffle(apps)
-        return [apps[0:n-1]]
+        return apps[0:n]
 
     def __del__(self):
         print("Exiting")

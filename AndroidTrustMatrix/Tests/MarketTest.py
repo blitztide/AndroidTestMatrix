@@ -18,12 +18,15 @@ class MarketTest(BaseTest):
         # Load Module for market
         MarketModule = self.ImportModule(Market)
         if MarketModule != None:
-            # Check availability
-            Tavail = self.CalculateAvailability(MarketModule)
-            Tmalware = self.MalwareCheck(MarketModule)
-            Tuptime = self.CalculateUptime(Market)
-            Tmarket = self.CalculateScore(Tuptime,Tavail,Tmalware)
-            self.db.Update_MarketScore(Market,Tmarket)
+            # Check if market is up
+            isUP = MarketModule.isUP()
+            if isUP:
+                # Check availability
+                Tavail = self.CalculateAvailability(MarketModule)
+                Tmalware = self.MalwareCheck(MarketModule)
+                Tuptime = self.CalculateUptime(Market)
+                Tmarket = self.CalculateScore(Tuptime,Tavail,Tmalware)
+                self.db.Update_MarketScore(Market,Tmarket)
             #Unload module
             del(MarketModule)
 
@@ -31,7 +34,8 @@ class MarketTest(BaseTest):
     def ImportModule(self,Market):
         """Dynamically import market modules"""
         # print(f"Loading Module mkt_{Market}")
-        importstr = f"AndroidTrustMatrix.Tests.Markets.mkt_{Market}"
+        marketstring = Market.__str__().strip().replace(" ","")
+        importstr = f"AndroidTrustMatrix.Tests.Markets.mkt_{marketstring}"
         try:
             module = importlib.import_module(importstr)
             return module
@@ -51,7 +55,7 @@ class MarketTest(BaseTest):
         for application in self.searchapps:
             totalapps += 1
             if MarketClass.Search(application):
-                self.availableapps += application
+                self.availableapps.append(application)
                 appcount += 1
         Tavail = appcount/totalapps
         return Tavail
@@ -77,9 +81,9 @@ class MarketTest(BaseTest):
                 if Result["isMalware"]:
                     Malicious += 1
         try:
-            Tmalware = Malicious/Checked
+            Tmalware = 1 - (Malicious/Checked)
         except:
-            Tmalware = 1
+            Tmalware = 0
         return Tmalware
 
     def CalculateUptime(self,market):
@@ -93,8 +97,8 @@ class MarketTest(BaseTest):
         return Tuptime
 
     def CalculateScore(self,Tuptime,Tavailability,Tmalware):
-        a = 0
-        b = 0
-        c = 0
+        a = 3
+        b = 3
+        c = 4
         Tmarket = (a*Tuptime)+(b*Tavailability)+(c*Tmalware)
         return Tmarket
