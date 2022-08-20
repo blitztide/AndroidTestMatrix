@@ -13,7 +13,9 @@ def get_db_config():
     return (username, password, host, port, database)
 
 def get_proxy_config():
-    proxy = config.get('proxy','proxies')
+    http = config.get('proxy','http')
+    https = config.get('proxy','https')
+    proxy = { "http": http, "https": https}
     return proxy
 
 def get_repo_dir():
