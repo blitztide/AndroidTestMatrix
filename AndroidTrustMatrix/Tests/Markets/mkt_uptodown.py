@@ -1,5 +1,6 @@
 def Search(app):
     """Search for app in store and return True if available"""
+    print("Unimplemented")
     return False
 
 def Download(app):

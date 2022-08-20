@@ -31,15 +31,16 @@ class App():
         """Start the application"""
         db = self.db
         print("Running")
-        apps = self.SelectApps(self.appchecks)
-        print(apps)
-        markettest = MarketTest.MarketTest(db,apps)
-        domaintest = DomainTest.DomainTest(db)
-        companytest = CompanyTest.CompanyTest(db)
-        for market in self.Markets:
-            markettest.Run(market)
-            domaintest.Run(market)
-            companytest.Run(market)
+        while(True):
+            apps = self.SelectApps(self.appchecks)
+            print(apps)
+            markettest = MarketTest.MarketTest(db,apps)
+            domaintest = DomainTest.DomainTest(db)
+            companytest = CompanyTest.CompanyTest(db)
+            for market in self.Markets:
+                markettest.Run(market)
+                domaintest.Run(market)
+                companytest.Run(market)
 
     def SelectApps(self,n):
         """Select n random apps and return a list of pkg_names"""
