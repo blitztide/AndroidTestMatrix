@@ -42,6 +42,10 @@ class App():
                 domaintest.Run(market)
                 companytest.Run(market)
 
+    def uptime_check():
+        """Continuous loop through markets to check uptime"""
+        pass
+
     def SelectApps(self,n):
         """Select n random apps and return a list of pkg_names"""
         apps = []

@@ -1,5 +1,5 @@
 import socket
-from OpenSSL.crypto import load_certificate, FILETYPE_PEM
+from OpenSSL.crypto import dump_certificate, FILETYPE_ASN1
 from OpenSSL import SSL
 import re
 
@@ -33,7 +33,8 @@ class CryptoTest(BaseTest):
         certificate = SSL_Sock.get_peer_certificate()
         sock.close()
         fingerprint = certificate.digest("sha1")
-        self.db.Add_Certificate(domain,certificate,fingerprint)
+        raw_cert = dump_certificate(FILETYPE_ASN1,certificate)
+        self.db.Add_Certificate(domain,raw_cert,fingerprint)
         return certificate
         
     def get_SSL_Score(self,domain):
@@ -64,12 +65,14 @@ class CryptoTest(BaseTest):
         for extension in range(extensions):
             data = Certificate.get_extension(extension)
             if data.get_short_name() == b'certificatePolicies':
-                policy = re.findall("(2\.23\.140\.1\.2\.[1-3])",data.__str__())
+                policy = re.findall("(2\.23\.140\.1\.2\.[1-3]|2\.23\.140\.1\.1)",data.__str__())
                 if not policy == None:
-                    if policy == "2.23.140.1.2.1":
+                    if policy == "2.23.140.1.2.1": #Domain Validation
                         Tcert = 1
-                    if policy == "2.23.140.1.2.2":
+                    if policy == "2.23.140.1.2.2": # Organisational Validation
                         Tcert = 2
-                    if policy == "2.23.140.1.2.3":
+                    if policy == "2.23.140.1.2.3": # Individual Validation
+                        Tcert = 2
+                    if policy == "2.23.140.1.1": #Extended Validation
                         Tcert = 3
         return Tcert

@@ -16,6 +16,7 @@ class MarketTest(BaseTest):
     def Run(self, Market):
         print(f"Running MarketTest on {Market}")
         # Load Module for market
+        self.market = Market
         MarketModule = self.ImportModule(Market)
         if MarketModule != None:
             # Check if market is up
@@ -77,9 +78,10 @@ class MarketTest(BaseTest):
                 Result = malwaretest.Run(apk)
                 exists = self.db.Check_Exists(Result)
                 if not exists:
-                    self.db.AddApplication(Result)
+                    self.db.Add_Application(Result)
                 if Result["isMalware"]:
                     Malicious += 1
+                self.db.Add_Available(self.market,Result)
         try:
             Tmalware = 1 - (Malicious/Checked)
         except:
