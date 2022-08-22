@@ -86,6 +86,7 @@ def Download(app):
     """Downloads the app and returns a file object, None on error"""
     apk_name = get_download_name(app)
     url = f"https://f-droid.org/repo/{apk_name}"
+    print(f"Downloading {app} from F-Droid")
     response = requests.get(url,proxies=proxies,headers=headers)
     if response.status_code == requests.status_codes.codes.ok:
         return response.content

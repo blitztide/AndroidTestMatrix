@@ -1,6 +1,7 @@
 import requests
 import json
 from io import BytesIO
+from AndroidTrustMatrix.Downloader import Progress_Download
 
 url = "http://ws75.aptoide.com/api/7/apps/search/query={}/limit=3"
 proxies = {"http": "socks5://127.0.0.1:9050", "https": "socks5://127.0.0.1:9050"}
@@ -34,11 +35,8 @@ def Download(app):
                 downloadurl = item['file']['path']
     if downloadurl:
         print(f"Downloading {app} from Aptoide")
-        response2 = requests.get(downloadurl,proxies=proxies,headers=headers)
-        if response2.status_code != 200:
-            return None
-        else:
-            return response2.content
+        response2 = Progress_Download(downloadurl,proxies=proxies,headers=headers)
+        return response2
     else:
         return None
 
@@ -48,7 +46,7 @@ def isUP():
 
 if __name__ == "__main__":
     import hashlib
-    app = "com.termux"
+    app = "com.sec.android.app.popupcalculator"
     if Search(app):
         apk = Download(app)
         md5sum = hashlib.md5(apk).hexdigest()

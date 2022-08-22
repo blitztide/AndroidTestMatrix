@@ -75,7 +75,7 @@ class MarketTest(BaseTest):
             apk = MarketClass.Download(application)
             if apk != None:
                 Result = malwaretest.Run(apk)
-                exists = self.db.CheckExists(Result)
+                exists = self.db.Check_Exists(Result)
                 if not exists:
                     self.db.AddApplication(Result)
                 if Result["isMalware"]:

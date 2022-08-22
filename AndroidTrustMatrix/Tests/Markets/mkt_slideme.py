@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+from AndroidTrustMatrix.Downloader import Progress_Download
 
 baseurl = "http://slideme.org"
 url = f"{baseurl}/applications/"
@@ -29,6 +30,7 @@ def Download(app):
     """Downloads the app and returns a file object, None on error"""
     searchurl = basesearch.format(app)
     print(f"Searching: {searchurl}")
+    downloadurl = None
     response = requests.get(searchurl,proxies=proxies,headers=headers)
     if response.status_code == requests.status_codes.codes.ok:
         soup = BeautifulSoup(response.text,'html.parser')
@@ -36,19 +38,16 @@ def Download(app):
         if searchresults:
             apps = searchresults.find("a")
             apppage = baseurl + apps['href']
-    response = requests.get(apppage,proxies=proxies,headers=headers)
-    if response.status_code == requests.status_codes.codes.ok:
-        soup = BeautifulSoup(response.text,'html.parser')
-        downloaddiv = soup.find("div",{"class":"download-button"})
-        downloadurl = downloaddiv.find("a")["href"]
+            response = requests.get(apppage,proxies=proxies,headers=headers)
+            if response.status_code == requests.status_codes.codes.ok:
+                soup = BeautifulSoup(response.text,'html.parser')
+                downloaddiv = soup.find("div",{"class":"download-button"})
+                downloadurl = downloaddiv.find("a")["href"]
 
     if downloadurl:
         print(f"Downloading {app} from SlideME")
-        response = requests.get(downloadurl,proxies=proxies,headers=headers)
-        if response.status_code != 200:
-            return None
-        else:
-            return response.content
+        response = Progress_Download(downloadurl,proxies=proxies,headers=headers)
+        return response
     return None
 
 def isUP():

@@ -93,6 +93,9 @@ class db():
         """Add a found application to the database"""
         print(f"New Application {pkg_name},{isMalware}")
         return
+    
+    def Check_Exists(self, result):
+        return True
 
     def Disconnect(self):
         """Close connection to database"""
