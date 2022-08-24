@@ -70,8 +70,9 @@ class AndroidXMLDecompress():
         strlen = arr[strOff + 1] << 8 & 0xff00 | arr[strOff] & 0xff
         chars = bytearray()
         for i in range(strlen):
-            chars.append(arr[strOff + 2 + i*2])
-        return chars.decode("utf-8")
+            if((strOff + 2 + i*2) < len(arr)):
+                chars.append(arr[strOff + 2 + i*2])
+        return chars.decode("utf-8",'backslashreplace')
 
     def LEW(self, arr: bytearray, off: int) -> int:
         c = arr[off + 3] << 24 & 0xff000000 | arr[off + 2] << 16 & 0xff0000 | arr[off + 1] << 8 & 0xff00 | arr[off] & 0xFF
