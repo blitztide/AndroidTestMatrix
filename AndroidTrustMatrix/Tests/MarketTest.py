@@ -76,11 +76,15 @@ class MarketTest(BaseTest):
             apk = MarketClass.Download(application)
             if apk != None:
                 Result = malwaretest.Run(apk)
+                Result["pkg_name"] = application
                 exists = self.db.Check_Exists(Result)
                 if not exists:
                     self.db.Add_Application(Result)
                 if Result["isMalware"]:
+                    print(f"Package {Result['pkg_name']} detected as Malicious")
                     Malicious += 1
+                else:
+                    print(f"Package {Result['pkg_name']} detected as Clean")
                 self.db.Add_Available(self.market,Result)
         try:
             Tmalware = 1 - (Malicious/Checked)

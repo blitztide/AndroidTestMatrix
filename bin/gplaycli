@@ -1,10 +1,10 @@
 #!/usr/home/david/AndroidTrustMatrix/bin/python
-# EASY-INSTALL-ENTRY-SCRIPT: 'charset-normalizer==2.1.0','console_scripts','normalizer'
+# EASY-INSTALL-ENTRY-SCRIPT: 'gplaycli==3.29','console_scripts','gplaycli'
 import re
 import sys
 
 # for compatibility with easy_install; see #2198
-__requires__ = 'charset-normalizer==2.1.0'
+__requires__ = 'gplaycli==3.29'
 
 try:
     from importlib.metadata import distribution
@@ -30,4 +30,4 @@ globals().setdefault('load_entry_point', importlib_load_entry_point)
 
 if __name__ == '__main__':
     sys.argv[0] = re.sub(r'(-script\.pyw?|\.exe)?$', '', sys.argv[0])
-    sys.exit(load_entry_point('charset-normalizer==2.1.0', 'console_scripts', 'normalizer')())
+    sys.exit(load_entry_point('gplaycli==3.29', 'console_scripts', 'gplaycli')())

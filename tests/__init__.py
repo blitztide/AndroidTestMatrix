@@ -1,5 +1,6 @@
 import glob
 import importlib
+from math import e
 
 class TestRunner():
 
@@ -9,7 +10,11 @@ class TestRunner():
 
     def Run(self):
         for test in self.tests:
-            test.Run()
+            try:
+                test.Run()
+                print(f"Test {test.Name()} Passed")
+            except Exception as e:
+                print(f"Test {test.Name()} Failed {e}")
 
     def loadmodules(self):
         """Dynamically import test modules into self.tests"""

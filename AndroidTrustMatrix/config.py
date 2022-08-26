@@ -25,3 +25,12 @@ def get_repo_dir():
 def get_clam_socket():
     socketadd = config.get('clamav','unixsock')
     return socketadd
+
+def get_adb_config():
+    host = config.get('adb','host')
+    port = int(config.get('adb','port'))
+    return (host,port)
+
+def get_temp_apk_path():
+    path = config.get('temp','apk_path')
+    return path
