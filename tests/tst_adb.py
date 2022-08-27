@@ -13,7 +13,7 @@ def Run():
     client = AdbClient(host,port)
     devices = client.devices()
     for device in devices:
-        print(device.serial)
+        print(f"Testing device: {device.serial}")
         assert adb.hello(device) == "hello"
         adb.unlock(device)
         assert adb.get_screenstate(device) == True

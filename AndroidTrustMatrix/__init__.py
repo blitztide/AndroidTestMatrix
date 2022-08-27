@@ -31,16 +31,15 @@ class App():
         """Start the application"""
         db = self.db
         print("Running")
-        while(True):
-            apps = self.SelectApps(self.appchecks)
-            print(apps)
-            markettest = MarketTest.MarketTest(db,apps)
-            domaintest = DomainTest.DomainTest(db)
-            companytest = CompanyTest.CompanyTest(db)
-            for market in self.Markets:
-                markettest.Run(market)
-                domaintest.Run(market)
-                companytest.Run(market)
+        apps = self.SelectApps(self.appchecks)
+        print(apps)
+        markettest = MarketTest.MarketTest(db,apps)
+        domaintest = DomainTest.DomainTest(db)
+        companytest = CompanyTest.CompanyTest(db)
+        for market in self.Markets:
+            markettest.Run(market)
+            domaintest.Run(market)
+            companytest.Run(market)
 
     def uptime_check():
         """Continuous loop through markets to check uptime"""

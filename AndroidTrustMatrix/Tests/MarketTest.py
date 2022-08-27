@@ -73,6 +73,8 @@ class MarketTest(BaseTest):
         Tmalware = 0
         for application in self.availableapps:
             Checked += 1
+            if self.db.Analysed_Recently(self.market,application):
+                continue
             apk = MarketClass.Download(application)
             if apk != None:
                 Result = malwaretest.Run(apk)

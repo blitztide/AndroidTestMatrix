@@ -3,6 +3,7 @@ import time
 from ppadb.client import Client as AdbClient
 from bs4 import BeautifulSoup
 from PIL import Image
+from io import BytesIO
 
 
 import AndroidTrustMatrix.config as Config
@@ -17,13 +18,17 @@ install_x = 505
 install_y = 558
 
 def check_installbutton(file):
+    """Checks a BytesIO object for presence of install button"""
+    file = Image.open(file)
     rgb_image = file.convert('RGB')
-    r,g,b = rgb_image.getpixel((576,585))
-
-    #Check if the button is present
-    if r==1 and g == 135 and b == 95:
-        return True
-    return False
+    #button can be in one of two places
+    button_positions = [(576,585),(515,465)]
+    for position in button_positions:
+        r,g,b = rgb_image.getpixel(position)
+        #Check if the button is present
+        if r==1 and g == 135 and b == 95:
+            return position
+    return None
 
 def Search(app):
     """Search for app in store and return True if available"""
@@ -56,6 +61,10 @@ def Download(app):
     # check all devices for app
     app_location = None
     devices = client.devices()
+    if devices == None:
+        print("No ADB devices available")
+        return None
+    
     for device in devices:
         if device.is_installed(app):
             print(f"{device} has {app}")
@@ -68,14 +77,18 @@ def Download(app):
         adb.Market_App(device,app)
         time.sleep(2)
         screenshot = device.screencap()
-        installable = check_installbutton(screenshot)
+        installable = check_installbutton(BytesIO(screenshot))
         if not installable:
             adb.lock(device)
             print(f"App: {app} not installable on device: {device.serial}")
             return None
-        adb.click(device,install_x,install_y)
+        x,y = installable
+        adb.click(device,x,y)
         adb.lock(device)
-        adb.waitinstall(device,app)
+        if not adb.waitinstall(device,app):
+            return None
+
+
        
     # Extract file from phone
     adb.download_apk(device,app)
@@ -96,7 +109,7 @@ def isUP():
     """Check connection to play.google.com and to phone"""
     #Checking google play
     try:
-        response = requests.head("https://play.google.com",proxies=proxies,headers=headers,timeout=10)
+        requests.head("https://play.google.com",proxies=proxies,headers=headers,timeout=10)
     except requests.exceptions.Timeout:
         return False
     #Checking phone connection

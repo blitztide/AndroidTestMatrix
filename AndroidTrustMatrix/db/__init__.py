@@ -10,6 +10,11 @@ class db():
         self.db = my.connect(host,username,password,database)
         print(f'Connected: {username}@{host}:{port}/{database}')
 
+    def Analysed_Recently(self,market,app):
+        """Checks if app has been seen in last 7 days"""
+        query = ""
+        return False
+
     def Get_Markets(self):
         """Extracts all known Marketplaces from DB and returns Marketplace objects"""
         query = "SELECT Marketplace.MarketID,Marketplace.name,Domains.URI,Marketplace.Company FROM Marketplace INNER JOIN Domains ON Domains.DomainID=Marketplace.Domain"

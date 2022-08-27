@@ -34,12 +34,15 @@ def waitinstall(device,app):
     found = device.is_installed(app)
     counter = 0
     while found == False:
-        # break at 10 minutes
-        if counter == 10*60*60:
-            break
-        time.sleep(1)
+        # break at 1 minutes
+        if counter == 120:
+            print(f"Unwilling to wait longer than 2 minutes for app {app}")
+            return False
+        time.sleep(5)
         found = device.is_installed(app)
         counter += 1
+    return True
+    
 
 def get_app_path(device,app):
     location = device.shell(f"pm path {app}")
