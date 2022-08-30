@@ -55,6 +55,23 @@ class db():
         query = f"SELECT IncidentDate FROM Incidents WHERE Company = {company}"
         incidents = self._dict_query(query)
         return incidents
+
+    def Get_Outage(self,market):
+        """Returns true if the market has previously been registered for an outage"""
+        query = f"SELECT COUNT(*) FROM FailedRequests WHERE Domain = (Select Domain from Marketplace WHERE name = '{market}' AND EndTime = Null)"
+        outage = self._list_query(query)
+        return outage
+
+    def Finish_Outage(self,domain,enddate):
+        """Close out an opened outage"""
+        query = "UPDATE FailedRequests SET EndTime = %s WHERE DomainID = %s"
+        self._simple_query(query,domain,enddate)
+    
+    def Set_Outage(self,domain,startdate):
+        """Sets the start of an outage for a given domain"""
+        query = "INSERT INTO FailedRequests(domain,StartTime) VALUES %s %s"
+        self._simple_query(query,domain,startdate)
+        return
     
     def Update_CompanyScore(self,market,Tcompany):
         """Update database with new CompanyScore"""

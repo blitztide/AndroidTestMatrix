@@ -9,12 +9,15 @@ class TestRunner():
         self.loadmodules()
 
     def Run(self):
+        failcount = 0
         for test in self.tests:
             try:
                 test.Run()
                 print(f"Test {test.Name()} Passed")
             except Exception as e:
                 print(f"Test {test.Name()} Failed {e}")
+                failcount += 1
+        return failcount
 
     def loadmodules(self):
         """Dynamically import test modules into self.tests"""

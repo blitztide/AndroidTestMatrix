@@ -3,4 +3,6 @@ import tests
 
 if __name__ == "__main__":
     TR = tests.TestRunner()
-    TR.Run()
+    value = TR.Run()
+    print(f"{value} tests failed!")
+    exit(value)

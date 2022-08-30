@@ -22,7 +22,5 @@ def Run():
         image = Image.open(BytesIO(result))
         adb.lock(device)
         assert adb.get_screenstate(device) == False
-        path = adb.get_app_path(device,"com.android.vending")
-        assert path == "/data/app/~~NrOVuJojqmg7clbVJQU8pQ==/com.android.vending-2aoilvXg68t8fE8h6SAfjA==/base.apk"
         
     return

@@ -1,8 +1,7 @@
-import importlib
 from re import T
 from AndroidTrustMatrix.Tests import BaseTest
 from AndroidTrustMatrix.Tests.MalwareTest import MalwareTest
-from AndroidTrustMatrix.util import eprint
+from AndroidTrustMatrix.util import eprint,ImportModule
 import AndroidTrustMatrix.config as Config
 
 class MarketTest(BaseTest):
@@ -17,7 +16,7 @@ class MarketTest(BaseTest):
         print(f"Running MarketTest on {Market}")
         # Load Module for market
         self.market = Market
-        MarketModule = self.ImportModule(Market)
+        MarketModule = ImportModule(Market)
         if MarketModule != None:
             # Check if market is up
             isUP = MarketModule.isUP()
@@ -30,19 +29,6 @@ class MarketTest(BaseTest):
                 self.db.Update_MarketScore(Market,Tmarket)
             #Unload module
             del(MarketModule)
-
-    
-    def ImportModule(self,Market):
-        """Dynamically import market modules"""
-        # print(f"Loading Module mkt_{Market}")
-        marketstring = Market.__str__().strip().replace(" ","")
-        importstr = f"AndroidTrustMatrix.Tests.Markets.mkt_{marketstring}"
-        try:
-            module = importlib.import_module(importstr)
-            return module
-        except:
-            eprint(f"Unable to import {importstr}")
-        return None
 
     def CalculateAvailability(self,MarketClass):
         # appcount = 0

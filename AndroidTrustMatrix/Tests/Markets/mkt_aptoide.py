@@ -2,16 +2,19 @@ import requests
 import json
 from io import BytesIO
 from AndroidTrustMatrix.Downloader import Progress_Download
+import AndroidTrustMatrix.config as Config
+
 
 url = "http://ws75.aptoide.com/api/7/apps/search/query={}/limit=3"
-proxies = {"http": "socks5://127.0.0.1:9050", "https": "socks5://127.0.0.1:9050"}
-headers = {
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
-        }
 
 def Search(app):
     """Search for app in store and return True if available"""
     search = url.format(app)
+    proxies = Config.get_proxy_config()
+    useragent = Config.get_user_agent()
+    headers = {
+        "User-Agent": useragent
+    }
     response = requests.get(search,proxies=proxies,headers=headers)
     if response.status_code == 200:
         jdata = json.loads(response.text)
@@ -25,6 +28,11 @@ def Search(app):
 def Download(app):
     """Downloads the app and returns a file object, None on error"""
     search = url.format(app)
+    proxies = Config.get_proxy_config()
+    useragent = Config.get_user_agent()
+    headers = {
+        "User-Agent": useragent
+    }
     response = requests.get(search,proxies=proxies,headers=headers)
     downloadurl=None
     if response.status_code == 200:

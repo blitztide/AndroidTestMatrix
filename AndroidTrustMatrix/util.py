@@ -1,8 +1,21 @@
 import sys
+import importlib
 
 def eprint(*args, **kwargs):
     """Wrapper over print to write to stderr"""
     print(*args, file=sys.stderr, **kwargs)
+
+def ImportModule(Market):
+    """Dynamically import market modules"""
+    # print(f"Loading Module mkt_{Market}")
+    marketstring = Market.__str__().strip().replace(" ","")
+    importstr = f"AndroidTrustMatrix.Tests.Markets.mkt_{marketstring}"
+    try:
+        module = importlib.import_module(importstr)
+        return module
+    except:
+        eprint(f"Unable to import {importstr}")
+    return None
 
 class AndroidXMLDecompress():
     endDocTag = 0x00100101

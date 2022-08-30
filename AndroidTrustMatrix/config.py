@@ -18,6 +18,10 @@ def get_proxy_config():
     proxy = { "http": http, "https": https}
     return proxy
 
+def get_user_agent():
+    agent = config.get('proxy','agent')
+    return agent
+
 def get_repo_dir():
     repodir = config.get('repo','repodir')
     return repodir

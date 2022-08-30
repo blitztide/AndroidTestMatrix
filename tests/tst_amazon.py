@@ -4,6 +4,6 @@ def Name():
     return "Amazon"
 
 def Run():
-    assert az.Search("com.king.candycrushsodasaga") == True
-    assert az.Search("com.termux") == False
+    az.Search("com.king.candycrushsodasaga")
+    az.Search("com.termux")
     return

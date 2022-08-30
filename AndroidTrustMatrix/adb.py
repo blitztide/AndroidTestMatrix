@@ -38,7 +38,7 @@ def waitinstall(device,app):
         if counter == 120:
             print(f"Unwilling to wait longer than 2 minutes for app {app}")
             return False
-        time.sleep(5)
+        time.sleep(1)
         found = device.is_installed(app)
         counter += 1
     return True

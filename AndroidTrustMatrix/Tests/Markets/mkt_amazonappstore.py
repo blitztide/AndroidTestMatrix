@@ -9,11 +9,6 @@ from io import BytesIO
 import AndroidTrustMatrix.config as Config
 import AndroidTrustMatrix.adb as adb
 
-proxies = {"http": "socks5://127.0.0.1:9050", "https": "socks5://127.0.0.1:9050"}
-headers = {
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
-        }
-
 install_x = 594
 install_y = 508
 prompt_x = 587
@@ -27,6 +22,11 @@ prompt_color = (1,2,3)
 def Search(app):
     """Search for app in store and return True if available"""
     url = f"https://www.amazon.co.uk/s?k={app}"
+    proxies = Config.get_proxy_config()
+    useragent = Config.get_user_agent()
+    headers = {
+        "User-Agent": useragent
+    }
     search_response = requests.get(url,proxies=proxies,headers=headers)
     
     if not search_response.status_code == 200:
@@ -44,10 +44,10 @@ def Search(app):
         a = search_result.find('a')
         new_page = "https://www.amazon.co.uk" + a['href']
         item_response = requests.get(new_page,proxies=proxies,headers=headers)
-        if not search_response.status_code == 200:
-            print(f"Server error: {search_response.status_code} for app {app}")
+        if not item_response.status_code == 200:
+            print(f"Server error: {item_response.status_code} for page {a['href']}")
             continue # Check next item
-        item_soup = BeautifulSoup(item_response,'html.parser')
+        item_soup = BeautifulSoup(item_response.content,'html.parser')
         item_result = item_soup.findAll('meta',attrs={'bundle-id':app})
         if item_result == None:
             # The app is not here!
