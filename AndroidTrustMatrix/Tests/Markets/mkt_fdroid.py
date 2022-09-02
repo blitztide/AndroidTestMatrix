@@ -4,7 +4,9 @@ import datetime
 from io import BytesIO
 import zipfile
 import json
+
 from AndroidTrustMatrix.Downloader import Progress_Download
+import AndroidTrustMatrix.config as Config
 
 repodir = "/UNI/Repo"
 fdroiddir= f"{repodir}/F-Droid"
@@ -93,7 +95,17 @@ def Download(app):
 
 def isUP():
     """Does a simple web request to see if service is up"""
-    return True
+    url = "https://f-droid.org"
+    proxies = Config.get_proxy_config()
+    useragent = Config.get_user_agent()
+    headers = {
+        "User-Agent": useragent
+    }
+    try:
+        requests.head(url,proxies=proxies,headers=headers,timeout=5)
+        return True
+    except:
+        return False
 
 if __name__ == "__main__":
     import hashlib

@@ -118,7 +118,18 @@ def Download(app):
 
 def isUP():
     """Does a simple web request to see if service is up"""
-    return True
+    url = f"https://www.amazon.co.uk"
+    proxies = Config.get_proxy_config()
+    useragent = Config.get_user_agent()
+    headers = {
+        "User-Agent": useragent
+    }
+    try:
+        search_response = requests.head(url,proxies=proxies,headers=headers,timeout=5)
+        return True
+    except:
+        return False
+    
 
 if __name__ == "__main__":
     import hashlib

@@ -38,3 +38,13 @@ def get_adb_config():
 def get_temp_apk_path():
     path = config.get('temp','apk_path')
     return path
+
+def get_tor_admin():
+    ip = config.get('tor','ip')
+    port = int(config.get('tor','port'))
+    password = config.get('tor','auth')
+    return (ip,port,password)
+
+def get_appcount():
+    count = config.get('AndroidTestMatrix','appcount')
+    return int(count)

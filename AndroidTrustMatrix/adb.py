@@ -3,13 +3,18 @@ import time
 import AndroidTrustMatrix.config as Config
 
 def unlock(device):
-    device.shell("input keyevent 26")
-    time.sleep(1)
-    device.shell("input swipe 367.5 1171 367.5 1171 2000")
+    # Check if asleep
+    is_on = get_screenstate(device)
+    if not is_on:
+        device.shell("input keyevent 26")
+        time.sleep(1)
+        device.shell("input swipe 367.5 1171 367.5 1171 2000")
     return
 
 def lock(device):
-    device.shell("input keyevent 26")
+    is_on = get_screenstate(device)
+    if is_on:
+        device.shell("input keyevent 26")
     return
 
 def get_screenstate(device):
@@ -26,8 +31,8 @@ def click(device,x,y):
     command = f"input touchscreen tap {x} {y}"
     device.shell(command)
 
-def Market_App(device,app):
-    command = f"am start -a android.intent.action.VIEW -d 'market://details?id={app}'"
+def Market_App(device,app,store):
+    command = f"am start -a android.intent.action.VIEW -d 'market://details?id={app}' {store}"
     device.shell(command)
 
 def waitinstall(device,app):

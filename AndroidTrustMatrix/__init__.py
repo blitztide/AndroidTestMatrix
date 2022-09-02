@@ -24,7 +24,7 @@ class App():
         self.db = AndroidTrustMatrix.db.db()
         self.db.Connect(username,password,host,port,database)
         self.Markets = self.db.Get_Markets()
-        self.appchecks = 10
+        self.appchecks = Config.get_appcount()
         return
 
     def run(self):

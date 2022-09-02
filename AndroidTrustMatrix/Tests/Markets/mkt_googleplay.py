@@ -40,7 +40,7 @@ def Search(app):
     elif response.status_code == 200:
         soup = BeautifulSoup(response.text,'html.parser')
         meta = soup.find('meta',attrs={'itemprop':'price'})
-        if meta['content'] == None:
+        if not meta.has_key('content'):
             return True
         if meta['content'] == "0":
             print(f"{app} found")
@@ -55,6 +55,8 @@ def Search(app):
 
 def Download(app):
     """Downloads the app and returns a file object, None on error"""
+    # appstore_app_name
+    appstore = "com.android.vending"
     # Connect to adb server
     host,port = Config.get_adb_config()
     client = AdbClient(host,port)
@@ -64,17 +66,21 @@ def Download(app):
     if devices == None:
         print("No ADB devices available")
         return None
-    
+
+    chosen_device = None
     for device in devices:
         if device.is_installed(app):
             print(f"{device} has {app}")
             app_location = device
+        if device.is_installed(appstore):
+            chosen_device = device
+
     #if not found, force install
     if app_location == None:
-        device = devices[0]
+        device = chosen_device
         adb.unlock(device)
         adb.home(device)
-        adb.Market_App(device,app)
+        adb.Market_App(device,app,appstore)
         time.sleep(2)
         screenshot = device.screencap()
         installable = check_installbutton(BytesIO(screenshot))
@@ -87,11 +93,10 @@ def Download(app):
         adb.lock(device)
         if not adb.waitinstall(device,app):
             return None
-
-
+        app_location = device
        
     # Extract file from phone
-    adb.download_apk(device,app)
+    adb.download_apk(app_location,app)
 
     # Load file into memory
     file = open(Config.get_temp_apk_path(),"rb")

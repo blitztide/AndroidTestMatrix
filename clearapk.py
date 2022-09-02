@@ -5,6 +5,12 @@ import AndroidTrustMatrix.config as Config
 import AndroidTrustMatrix.adb as adb
 
 def should_delete(package):
+    apps_file = open("config/apps","r")
+    for line in apps_file.readlines():
+        if line.strip() == package.strip():
+            apps_file.close()
+            return True
+    apps_file.close()
     return False
 
 def run():
@@ -16,8 +22,8 @@ def run():
         for package in packages:
             #Check if it is in packages.list
             pkg_name = package[8:]
-            print(pkg_name)
             if should_delete(pkg_name):
+                print(f"Deleting {package}")
                 device.shell(f"pm uninstall {pkg_name}")
 
 

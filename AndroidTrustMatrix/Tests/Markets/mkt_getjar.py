@@ -1,3 +1,7 @@
+import requests
+
+import AndroidTrustMatrix.config as Config
+
 def Search(app):
     """Search for app in store and return True if available"""
     return False
@@ -8,7 +12,17 @@ def Download(app):
 
 def isUP():
     """Does a simple web request to see if service is up"""
-    return True
+    url = "https://www.getjar.com/"
+    proxies = Config.get_proxy_config()
+    useragent = Config.get_user_agent()
+    headers = {
+        "User-Agent": useragent
+    }
+    try:
+        requests.head(url,proxies=proxies,headers=headers,timeout=5)
+        return True
+    except:
+        return False
 
 if __name__ == "__main__":
     import hashlib

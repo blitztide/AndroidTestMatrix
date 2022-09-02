@@ -23,13 +23,13 @@ class db():
         for row in rows:
             MarketID = row["MarketID"]
             name = row["name"]
-            URI = row["URI"]
+            uri = row["URI"]
             if "Company" in row.keys():
                 Company = row["Company"]
             else:
                 Company = 0
 
-            markets.append(MP.Marketplace(MarketID,name,URI,Company))
+            markets.append(MP.Marketplace(MarketID,name,uri,Company))
         return markets
     
     def Get_CompanyInfo(self,market):
@@ -58,19 +58,19 @@ class db():
 
     def Get_Outage(self,market):
         """Returns true if the market has previously been registered for an outage"""
-        query = f"SELECT COUNT(*) FROM FailedRequests WHERE Domain = (Select Domain from Marketplace WHERE name = '{market}' AND EndTime = Null)"
-        outage = self._list_query(query)
+        query = "SELECT COUNT(RequestID) FROM FailedRequests WHERE Domain = (Select Domain from Marketplace WHERE name = %s) AND EndTime IS NULL"
+        outage = self._list_query(query,[market])
         return outage
 
-    def Finish_Outage(self,domain,enddate):
+    def Finish_Outage(self,market,enddate):
         """Close out an opened outage"""
-        query = "UPDATE FailedRequests SET EndTime = %s WHERE DomainID = %s"
-        self._simple_query(query,domain,enddate)
+        query = "UPDATE FailedRequests SET EndTime = %s WHERE Domain = (Select Domain from Marketplace WHERE name = %s)"
+        self._simple_query(query,(enddate,market))
     
-    def Set_Outage(self,domain,startdate):
+    def Set_Outage(self,market,startdate):
         """Sets the start of an outage for a given domain"""
-        query = "INSERT INTO FailedRequests(domain,StartTime) VALUES %s %s"
-        self._simple_query(query,domain,startdate)
+        query = "INSERT INTO FailedRequests(Domain,StartTime) VALUES ((Select Domain from Marketplace WHERE name = %s),%s)"
+        self._simple_query(query,(market,startdate))
         return
     
     def Update_CompanyScore(self,market,Tcompany):
@@ -149,6 +149,14 @@ class db():
         rows = cursor.fetchall()
         cursor.close()
         return rows
+
+    def Flush(self):
+        """Flush buffer to db"""
+        self.db.commit()
+
+    def Rollback(self):
+        """Undo changes since last flush"""
+        self.db.rollback()
 
     def Disconnect(self):
         """Close connection to database"""
