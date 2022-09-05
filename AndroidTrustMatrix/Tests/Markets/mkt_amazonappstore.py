@@ -9,10 +9,10 @@ from io import BytesIO
 import AndroidTrustMatrix.config as Config
 import AndroidTrustMatrix.adb as adb
 
-install_x = 594
-install_y = 508
-prompt_x = 587
-prompt_y = 815
+install_x = 500
+install_y = 500
+prompt_x = 580
+prompt_y = 802
 home_x = 61
 home_y = 1304
 installable_color = (1,2,3)
@@ -25,7 +25,8 @@ def Search(app):
     proxies = Config.get_proxy_config()
     useragent = Config.get_user_agent()
     headers = {
-        "User-Agent": useragent
+        "User-Agent": useragent,
+        "Accept-Language": "en-US,en;q=0.5" # Attempt to ensure english language for parsing
     }
     search_response = requests.get(url,proxies=proxies,headers=headers)
     
@@ -41,7 +42,15 @@ def Search(app):
         if not search_result.has_attr('data-asin'):
             # Not valid search result
             continue
-        a = search_result.find('a')
+        # Check if the search result if of 'App' type
+        div = search_result.find('div',attrs={"class":"s-price-instructions-style"})
+        # Only the App type has a-text-bold for the first 'A'
+        a = div.find('a', attrs={"class":"a-text-bold"})
+        if not a.text.strip() == "App":
+            # Somehow not an app
+            continue
+
+        # Get new page information
         new_page = "https://www.amazon.co.uk" + a['href']
         item_response = requests.get(new_page,proxies=proxies,headers=headers)
         if not item_response.status_code == 200:
@@ -62,10 +71,17 @@ def Search(app):
     return False
 
 def check_installable(image):
-    return False
-
-def check_installprompt(image):
-    return False
+    """Checks a BytesIO object for presence of install button"""
+    file = Image.open(file)
+    rgb_image = file.convert('RGB')
+    #button can be in one of two places
+    button_positions = [(500,500),(600,500)]
+    for position in button_positions:
+        r,g,b = rgb_image.getpixel(position)
+        #Check if the button is present
+        if r==0 and g == 202 and b == 255:
+            return position
+    return None
 
 def Download(app):
     """Downloads the app and returns a file object, None on error"""
@@ -94,10 +110,9 @@ def Download(app):
             print(f"App: {app} not installable on device: {device.serial}")
             return None
         adb.click(device,install_x,install_y)
-        install_prompt = False
-        while not install_prompt:
-            screenshot = device.screencap()
-            install_prompt = check_installprompt(BytesIO(screenshot))
+        install_prompt = adb.get_focused(adb.get_activities(device))
+        while not install_prompt == "com.android.packageinstaller.PackageInstallerActivity":
+            install_prompt = adb.get_focused(adb.get_activities(device))
             time.sleep(5)
         adb.click(device,prompt_x,prompt_y)
         # Should be installing now, reset screen
@@ -114,7 +129,7 @@ def Download(app):
     file = open(Config.get_temp_apk_path(),"rb")
     apk = file.read()
     file.close()
-    return None
+    return apk
 
 def isUP():
     """Does a simple web request to see if service is up"""

@@ -81,7 +81,7 @@ def Download(app):
         adb.unlock(device)
         adb.home(device)
         adb.Market_App(device,app,appstore)
-        time.sleep(2)
+        time.sleep(5)
         screenshot = device.screencap()
         installable = check_installbutton(BytesIO(screenshot))
         if not installable:

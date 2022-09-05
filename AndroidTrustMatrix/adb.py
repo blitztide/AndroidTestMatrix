@@ -70,3 +70,15 @@ def remove(device,app):
 def hello(device):
     result = device.shell("echo hello")
     return result.strip()
+
+def get_activities(device):
+    result = device.shell("dumpsys activity activities")
+    return result
+
+def get_focused(appstring):
+    # Check for mCurrentFocus in activitylist
+    for line in appstring.splitlines():
+        if line.strip()[0:13] == "mCurrentFocus":
+            # Extract app name
+            return line.strip().split('/')[-1][:-1]
+    return None
