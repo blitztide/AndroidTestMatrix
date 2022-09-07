@@ -1,4 +1,5 @@
 import socket
+import time
 import requests
 import AndroidTrustMatrix.config as Config
 
@@ -43,4 +44,5 @@ def main():
         return False
     status = newnym(connection)
     connection.close()
+    time.sleep(10)
     return True

@@ -20,7 +20,8 @@ def isUP():
         "User-Agent": useragent
     }
     try:
-        Plain_Head(url,proxies=proxies,headers=headers,timeout=5)
+        # Raw requests.get as we need to handle exceptions to detect down status
+        requests.get(url,proxies=proxies,headers=headers,timeout=5)
         return True
     except:
         return False

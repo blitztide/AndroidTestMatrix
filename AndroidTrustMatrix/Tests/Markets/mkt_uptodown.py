@@ -68,10 +68,12 @@ def Download(app):
     }
     response = Plain_Post(search,proxies=proxies,headers=headers,data=data)
     if not response.status_code == 200:
-        return False
+        return None
     soup = BeautifulSoup(response.text,'html.parser')
     # Find the item list
     itemlist = soup.find("div",attrs={"id":"content-list"})
+    if itemlist == None:
+        return None
     itemlist.find_all("div",attrs={"class":"item"})
 
     # Iterate over search results
@@ -115,7 +117,7 @@ def isUP():
         "User-Agent": useragent
     }
     try:
-        Plain_Head(url,proxies=proxies,headers=headers,timeout=5)
+        requests.head(url,proxies=proxies,headers=headers,timeout=5)
         return True
     except:
         return False

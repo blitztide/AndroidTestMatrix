@@ -31,7 +31,6 @@ def Search(app):
 def Download(app):
     """Downloads the app and returns a file object, None on error"""
     searchurl = basesearch.format(app)
-    print(f"Searching: {searchurl}")
     downloadurl = None
     response = Plain_Get(searchurl,proxies=proxies,headers=headers)
     if response.status_code == requests.status_codes.codes.ok:

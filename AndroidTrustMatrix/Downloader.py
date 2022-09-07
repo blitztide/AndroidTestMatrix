@@ -28,8 +28,8 @@ def Plain_Get(*args, **kwargs):
         try:
             response = requests.get(*args,**kwargs)
             request_worked = True
-        except:
-            print("Error performing Get request: {e}")
+        except Exception as e:
+            print(f"Error performing Get request: {e}")
             print("Changing TOR Node")
             TOR.tor.main()
     return response
@@ -42,8 +42,8 @@ def Plain_Head(*args, **kwargs):
         try:
             response = requests.get(*args,**kwargs)
             request_worked = True
-        except:
-            print("Error performing Head request: {e}")
+        except Exception as e:
+            print(f"Error performing Head request: {e}")
             print("Changing TOR Node")
             TOR.tor.main()
     return response
@@ -56,8 +56,8 @@ def Plain_Post(*args, **kwargs):
         try:
             response = requests.get(*args,**kwargs)
             request_worked = True
-        except:
-            print("Error performing Post request: {e}")
+        except Exception as e:
+            print(f"Error performing Post request: {e}")
             print("Changing TOR Node")
             TOR.tor.main()
     return response

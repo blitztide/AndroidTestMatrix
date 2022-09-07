@@ -150,7 +150,7 @@ def isUP():
         "User-Agent": useragent
     }
     try:
-        search_response = requests.head(url,proxies=proxies,headers=headers,timeout=5)
+        requests.head(url,proxies=proxies,headers=headers,timeout=5)
         return True
     except:
         return False
