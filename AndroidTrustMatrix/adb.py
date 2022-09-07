@@ -66,14 +66,15 @@ def download_apk(device,app):
     downloaded = False
     while not downloaded == True:
         try:
-            print("Attempting Download")
+            #print(f"{downloaded}Attempting Download")
+            #print(f"{path} -> {Config.get_temp_apk_path()}")
             # Appears to be broken
             device.pull(path,Config.get_temp_apk_path())
             #command = f"adb pull '{path}' '{Config.get_temp_apk_path()}'"
             #os.system(command)
-            downloaded = True
         except Exception as e:
             print(f"ADB pull failed {e}, trying again")
+        downloaded = True
 
 def remove(device,app):
     command = f"pm uninstall {app}"

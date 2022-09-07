@@ -101,10 +101,7 @@ def Download(app):
         app_location = device
        
     # Extract file from phone
-    downloaded = 1
-    while not downloaded == 0:
-        # Exit status 0 for download completed successfully
-        downloaded = adb.download_apk(device,app)
+    adb.download_apk(device,app)
 
     # Load file into memory
     file = open(Config.get_temp_apk_path(),"rb")
