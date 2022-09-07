@@ -75,6 +75,10 @@ def Download(app):
     # Iterate over search results
     for item in itemlist:
         #Trim location.href and trailing quote
+        if isinstance(item,NavigableString):
+            # Not an item we are looking for will not have attrs
+            continue
+
         new_url = item.attrs['onclick'][15:-1]
         # Check if new page is the actual app page
         potential_app = requests.get(new_url,proxies=proxies,headers=headers)
