@@ -2,7 +2,7 @@ import requests
 import sys
 
 def Progress_Download(*args, **kwargs):
-    response = requests.get(*args,stream=True,**kwargs)
+    response = requests.get(*args,stream=True,**kwargs,verify=False)
     length = response.headers.get('content-length')
     if length == None:
         return None
