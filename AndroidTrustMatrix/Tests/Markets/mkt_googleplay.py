@@ -1,5 +1,7 @@
+from sys import path
 import requests
 import time
+import os
 from ppadb.client import Client as AdbClient
 from bs4 import BeautifulSoup
 from PIL import Image
@@ -40,6 +42,9 @@ def Search(app):
     elif response.status_code == 200:
         soup = BeautifulSoup(response.text,'html.parser')
         meta = soup.find('meta',attrs={'itemprop':'price'})
+        if meta == None:
+            #Fail open?
+            return True
         if not meta.has_key('content'):
             return True
         if meta['content'] == "0":
@@ -96,7 +101,10 @@ def Download(app):
         app_location = device
        
     # Extract file from phone
-    adb.download_apk(app_location,app)
+    downloaded = 1
+    while not downloaded == 0:
+        # Exit status 0 for download completed successfully
+        downloaded = adb.download_apk(device,app)
 
     # Load file into memory
     file = open(Config.get_temp_apk_path(),"rb")

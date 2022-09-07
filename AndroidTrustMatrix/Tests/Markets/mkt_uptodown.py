@@ -1,4 +1,4 @@
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, NavigableString
 import requests
 import re
 
@@ -30,6 +30,13 @@ def Search(app):
     # Iterate over search results
     for item in itemlist:
         #Trim location.href and trailing quote
+        if isinstance(item,NavigableString):
+            # Not an item we are looking for
+            continue
+
+        if not item.has_attr('onclick'):
+            # Not the item we are searching for
+            continue
         new_url = item.attrs['onclick'][15:-1]
         # Check if new page is the actual app page
         potential_app = requests.get(new_url,proxies=proxies,headers=headers)

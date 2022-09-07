@@ -44,8 +44,14 @@ def Search(app):
             continue
         # Check if the search result if of 'App' type
         div = search_result.find('div',attrs={"class":"s-price-instructions-style"})
+        if div == None:
+            # Div could not be found
+            continue
         # Only the App type has a-text-bold for the first 'A'
         a = div.find('a', attrs={"class":"a-text-bold"})
+        if a == None:
+            # A Not found
+            continue
         if not a.text.strip() == "App":
             # Somehow not an app
             continue
@@ -63,7 +69,10 @@ def Search(app):
             continue
         # Check app for price
         price_result = item_soup.find('strong', attrs={'class':'priceLarge'})
-        if not price_result.contents.strip() == "Free Download":
+        if price_result == None:
+            # Price not found
+            continue
+        if not price_result.text.strip() == "Free Download":
             print(f"App found but price is: {price_result.contents}")
             return False
         # Our app exists and is free
@@ -72,7 +81,7 @@ def Search(app):
 
 def check_installable(image):
     """Checks a BytesIO object for presence of install button"""
-    file = Image.open(file)
+    file = Image.open(image)
     rgb_image = file.convert('RGB')
     #button can be in one of two places
     button_positions = [(500,500),(600,500)]

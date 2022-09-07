@@ -1,4 +1,5 @@
 import datetime
+import os
 import time
 import AndroidTrustMatrix.config as Config
 
@@ -40,8 +41,8 @@ def waitinstall(device,app):
     counter = 0
     while found == False:
         # break at 1 minutes
-        if counter == 120:
-            print(f"Unwilling to wait longer than 2 minutes for app {app}")
+        if counter == 600:
+            print(f"Unwilling to wait longer than 5 minutes for app {app}")
             return False
         time.sleep(1)
         found = device.is_installed(app)
@@ -61,7 +62,18 @@ def download_apk(device,app):
     path = get_app_path(device,app)
     if path == None:
         return None
-    device.pull(path,Config.get_temp_apk_path())
+    print(f"app path {path}")
+    downloaded = False
+    while not downloaded == True:
+        try:
+            print("Attempting Download")
+            # Appears to be broken
+            device.pull(path,Config.get_temp_apk_path())
+            #command = f"adb pull '{path}' '{Config.get_temp_apk_path()}'"
+            #os.system(command)
+            downloaded = True
+        except Exception as e:
+            print(f"ADB pull failed {e}, trying again")
 
 def remove(device,app):
     command = f"pm uninstall {app}"

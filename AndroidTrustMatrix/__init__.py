@@ -1,5 +1,6 @@
 import signal
 import random
+import traceback
 from AndroidTrustMatrix.Tests.CompanyTest import CompanyTest
 from AndroidTrustMatrix.Tests.DomainTest import DomainTest
 from AndroidTrustMatrix.Tests.MarketTest import MarketTest
@@ -9,6 +10,8 @@ import AndroidTrustMatrix.config as Config
 from AndroidTrustMatrix.Tests import *
 
 def handler(signum,frame):
+    for line in traceback.format_stack():
+        print(line.strip())
     exit(1)
 
 signal.signal(signal.SIGINT, handler)

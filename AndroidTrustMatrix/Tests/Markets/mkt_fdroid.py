@@ -21,9 +21,9 @@ json_data = ""
 
 def get_repolist():
     print("Updating fdroid repo")
-    response = requests.get(url,stream=True,proxies=proxies,headers=headers)
-    if response.status_code == requests.status_codes.codes.ok:
-        zp = zipfile.ZipFile(BytesIO(response.content))
+    response = Progress_Download(url,proxies=proxies,headers=headers)
+    if response:
+        zp = zipfile.ZipFile(BytesIO(response))
         fp = open(repopath,"wb")
         fp.write(zp.open("index-v1.json").read())
         fp.close()

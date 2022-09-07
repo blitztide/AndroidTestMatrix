@@ -22,5 +22,7 @@ def Run():
         image = Image.open(BytesIO(result))
         adb.lock(device)
         assert adb.get_screenstate(device) == False
+        # Check ADB pull
+        adb.download_apk(device,"com.android.vending")
         
     return
