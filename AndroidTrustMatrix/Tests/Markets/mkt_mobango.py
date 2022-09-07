@@ -1,4 +1,5 @@
 import requests
+from AndroidTrustMatrix.Downloader import Plain_Head
 
 import AndroidTrustMatrix.config as Config
 
@@ -19,7 +20,7 @@ def isUP():
         "User-Agent": useragent
     }
     try:
-        search_response = requests.get(url,proxies=proxies,headers=headers,timeout=5)
+        search_response = Plain_Head(url,proxies=proxies,headers=headers,timeout=5)
         if search_response.status_code:
             return True
     except:

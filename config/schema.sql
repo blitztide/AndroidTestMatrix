@@ -97,3 +97,4 @@ ALTER TABLE `Incidents` ADD FOREIGN KEY (`Company`) REFERENCES `Companies` (`Com
 ALTER TABLE `Incidents` ADD FOREIGN KEY (`Incident`) REFERENCES `Incident` (`IncidentID`);
 
 ALTER TABLE `FailedRequests` ADD FOREIGN KEY (`Domain`) REFERENCES `Domains` (`DomainID`);
+

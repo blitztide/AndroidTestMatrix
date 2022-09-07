@@ -1,5 +1,7 @@
 import socket
 import requests
+import AndroidTrustMatrix.config as Config
+
 
 def open(connection,host,port):
     status = connection.connect((host,port))
@@ -29,7 +31,8 @@ def getnewip(proxies):
     return r.text
 
 
-def main(ip,port,password):
+def main():
+    ip,port,password = Config.get_tor_admin()
     connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     status = open(connection,ip,port)
     if not status:

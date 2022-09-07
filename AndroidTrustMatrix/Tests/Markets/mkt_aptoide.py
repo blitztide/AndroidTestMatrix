@@ -1,7 +1,7 @@
 import requests
 import json
 from io import BytesIO
-from AndroidTrustMatrix.Downloader import Progress_Download
+from AndroidTrustMatrix.Downloader import Plain_Get, Progress_Download
 import AndroidTrustMatrix.config as Config
 
 
@@ -15,7 +15,7 @@ def Search(app):
     headers = {
         "User-Agent": useragent
     }
-    response = requests.get(search,proxies=proxies,headers=headers)
+    response = Plain_Get(search,proxies=proxies,headers=headers)
     if response.status_code == 200:
         jdata = json.loads(response.text)
         results = jdata['datalist']
@@ -33,7 +33,7 @@ def Download(app):
     headers = {
         "User-Agent": useragent
     }
-    response = requests.get(search,proxies=proxies,headers=headers)
+    response = Plain_Get(search,proxies=proxies,headers=headers)
     downloadurl=None
     if response.status_code == 200:
         jdata = json.loads(response.text)

@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from AndroidTrustMatrix.Downloader import Progress_Download
+from AndroidTrustMatrix.Downloader import Plain_Get, Plain_Head, Progress_Download
 import AndroidTrustMatrix.config as Config
 
 
@@ -33,14 +33,14 @@ def Download(app):
     searchurl = basesearch.format(app)
     print(f"Searching: {searchurl}")
     downloadurl = None
-    response = requests.get(searchurl,proxies=proxies,headers=headers)
+    response = Plain_Get(searchurl,proxies=proxies,headers=headers)
     if response.status_code == requests.status_codes.codes.ok:
         soup = BeautifulSoup(response.text,'html.parser')
         searchresults = soup.find("div",{"class":"node-mobileapp"})
         if searchresults:
             apps = searchresults.find("a")
             apppage = baseurl + apps['href']
-            response = requests.get(apppage,proxies=proxies,headers=headers)
+            response = Plain_Get(apppage,proxies=proxies,headers=headers)
             if response.status_code == requests.status_codes.codes.ok:
                 soup = BeautifulSoup(response.text,'html.parser')
                 downloaddiv = soup.find("div",{"class":"download-button"})
@@ -61,7 +61,7 @@ def isUP():
         "User-Agent": useragent
     }
     try:
-        requests.head(url,proxies=proxies,headers=headers,timeout=5)
+        Plain_Head(url,proxies=proxies,headers=headers,timeout=5)
         return True
     except:
         return False

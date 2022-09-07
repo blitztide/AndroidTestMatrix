@@ -1,4 +1,5 @@
 import requests
+from AndroidTrustMatrix.Downloader import Plain_Head
 
 import AndroidTrustMatrix.config as Config
 
@@ -20,7 +21,7 @@ def isUP():
         "User-Agent": useragent
     }
     try:
-        requests.head(url,proxies=proxies,headers=headers,timeout=5)
+        Plain_Head(url,proxies=proxies,headers=headers,timeout=5)
         return True
     except:
         return False

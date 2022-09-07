@@ -2,6 +2,7 @@ from sys import path
 import requests
 import time
 import os
+from AndroidTrustMatrix.Downloader import Plain_Get, Plain_Head
 from ppadb.client import Client as AdbClient
 from bs4 import BeautifulSoup
 from PIL import Image
@@ -35,7 +36,7 @@ def check_installbutton(file):
 def Search(app):
     """Search for app in store and return True if available"""
     url = f"https://play.google.com/store/apps/details?id={app}"
-    response = requests.get(url,proxies=proxies,headers=headers)
+    response = Plain_Get(url,proxies=proxies,headers=headers)
     if response.status_code == 404:
         print(f"{app} not found: {response.status_code}")
         return False
@@ -119,7 +120,7 @@ def isUP():
     """Check connection to play.google.com and to phone"""
     #Checking google play
     try:
-        requests.head("https://play.google.com",proxies=proxies,headers=headers,timeout=10)
+        Plain_Head("https://play.google.com",proxies=proxies,headers=headers,timeout=10)
     except requests.exceptions.Timeout:
         return False
     #Checking phone connection

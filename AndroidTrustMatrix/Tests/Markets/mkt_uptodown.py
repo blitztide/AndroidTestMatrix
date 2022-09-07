@@ -3,7 +3,7 @@ import requests
 import re
 
 import AndroidTrustMatrix.config as Config
-from AndroidTrustMatrix.Downloader import Progress_Download
+from AndroidTrustMatrix.Downloader import Plain_Head, Plain_Post, Progress_Download,Plain_Get
 
 
 def Search(app):
@@ -41,7 +41,7 @@ def Search(app):
             continue
         new_url = item.attrs['onclick'][15:-1]
         # Check if new page is the actual app page
-        potential_app = requests.get(new_url,proxies=proxies,headers=headers)
+        potential_app = Plain_Get(new_url,proxies=proxies,headers=headers)
         soup = BeautifulSoup(potential_app.text,'html.parser')
         section = soup.find("section",attrs={"class":"info","id":"technical-information"})
         table = section.find("tr",attrs={"class":"full"})
@@ -66,7 +66,7 @@ def Download(app):
     data = {
         "q" : app
     }
-    response = requests.post(search,proxies=proxies,headers=headers,data=data)
+    response = Plain_Post(search,proxies=proxies,headers=headers,data=data)
     if not response.status_code == 200:
         return False
     soup = BeautifulSoup(response.text,'html.parser')
@@ -83,7 +83,7 @@ def Download(app):
 
         new_url = item.attrs['onclick'][15:-1]
         # Check if new page is the actual app page
-        potential_app = requests.get(new_url,proxies=proxies,headers=headers)
+        potential_app = Plain_Get(new_url,proxies=proxies,headers=headers)
         soup = BeautifulSoup(potential_app.text,'html.parser')
         section = soup.find("section",attrs={"class":"info","id":"technical-information"})
         table = section.find("tr",attrs={"class":"full"})
@@ -95,7 +95,7 @@ def Download(app):
     if not package_name == app:
         return None
     download_page = new_url + '/download'
-    response = requests.get(download_page,proxies=proxies,headers=headers)
+    response = Plain_Get(download_page,proxies=proxies,headers=headers)
     download_soup = BeautifulSoup(response,'html.parser')
     button = download_soup.find('button',attrs={"id":"detail-download-button","class":"button download"})
     download_url = button['data-url']
@@ -115,7 +115,7 @@ def isUP():
         "User-Agent": useragent
     }
     try:
-        requests.head(url,proxies=proxies,headers=headers,timeout=5)
+        Plain_Head(url,proxies=proxies,headers=headers,timeout=5)
         return True
     except:
         return False

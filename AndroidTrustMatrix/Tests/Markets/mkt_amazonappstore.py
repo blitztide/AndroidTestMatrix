@@ -1,6 +1,7 @@
 from signal import Handlers
 import requests
 import time
+from AndroidTrustMatrix.Downloader import Plain_Get
 from ppadb.client import Client as AdbClient
 from bs4 import BeautifulSoup
 from PIL import Image
@@ -28,7 +29,7 @@ def Search(app):
         "User-Agent": useragent,
         "Accept-Language": "en-US,en;q=0.5" # Attempt to ensure english language for parsing
     }
-    search_response = requests.get(url,proxies=proxies,headers=headers)
+    search_response = Plain_Get(url,proxies=proxies,headers=headers)
     
     if not search_response.status_code == 200:
         print(f"Server error: {search_response.status_code} for app {app}")
@@ -58,7 +59,7 @@ def Search(app):
 
         # Get new page information
         new_page = "https://www.amazon.co.uk" + a['href']
-        item_response = requests.get(new_page,proxies=proxies,headers=headers)
+        item_response = Plain_Get(new_page,proxies=proxies,headers=headers)
         if not item_response.status_code == 200:
             print(f"Server error: {item_response.status_code} for page {a['href']}")
             continue # Check next item
