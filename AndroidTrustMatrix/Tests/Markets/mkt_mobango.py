@@ -20,7 +20,7 @@ def isUP():
         "User-Agent": useragent
     }
     try:
-        search_response = Plain_Head(url,proxies=proxies,headers=headers,timeout=5)
+        search_response = requests.head(url,proxies=proxies,headers=headers,timeout=5)
         if search_response.status_code:
             return True
     except:

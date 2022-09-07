@@ -58,7 +58,7 @@ class UptimeEngine():
                 self.db.Rollback()
             else:
                 self.db.Flush()
-            time.sleep(10)
+            time.sleep(60)
 
         
 
