@@ -25,6 +25,8 @@ def Search(app):
     soup = BeautifulSoup(response.text,'html.parser')
     # Find the item list
     itemlist = soup.find("div",attrs={"id":"content-list"})
+    if itemlist == None:
+        return False
     itemlist.find_all("div",attrs={"class":"item"})
 
     # Iterate over search results

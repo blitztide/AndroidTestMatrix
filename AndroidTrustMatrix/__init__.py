@@ -55,6 +55,7 @@ class App():
         for line in fp.readlines():
                 apps.append(line.strip())
         random.shuffle(apps)
+        fp.close()
         return apps[0:n]
 
     def __del__(self):
