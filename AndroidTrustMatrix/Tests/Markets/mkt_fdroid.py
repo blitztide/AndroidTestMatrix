@@ -57,7 +57,7 @@ def search_local(app):
         jdata["packages"][app]
         found = True
     except:
-        print(f"Unable to locate package: {app}")
+        print(f"Unable to find package: {app}")
         found = False
 
     return found
@@ -68,7 +68,7 @@ def get_download_name(app):
     try:
         jdata["packages"][app]
     except:
-        print("Unable to locate package")
+        print(f"Unable to locate download url: {app}")
         return
     versions = []
     for version in jdata["packages"][app]:
