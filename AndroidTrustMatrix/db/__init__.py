@@ -43,16 +43,15 @@ class db():
             for row in rows:
                 company["Exists"] = row["Exists"]
                 company["Founded"] = row["Founded"]
-            dateformat = "%Y-%m-%d %H:%M:%S"
-            StartDate = datetime.datetime.strptime(company["Founded"],dateformat)
-            Today = datetime.today().strftime(dateformat)
+            StartDate = company["Founded"]
+            Today = datetime.datetime.today()
             diff = Today - StartDate
             company["Age"] = diff.days
         return company
     
     def Get_Incidents(self,company):
         """Returns a list of incidents for a given company"""
-        query = f"SELECT IncidentDate FROM Incidents WHERE Company = {company}"
+        query = f"SELECT Incident.IncidentDate from Incident CROSS JOIN Incidents CROSS JOIN Companies WHERE Companies.name = '{company}'"
         incidents = self._dict_query(query)
         return incidents
 

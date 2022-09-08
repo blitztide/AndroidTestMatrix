@@ -13,7 +13,7 @@ class CompanyTest(BaseTest):
         db = self.db
         company = db.Get_CompanyInfo(Market)
         if( company["Exists"]==True):
-            incidents = db.Get_Incidents(company)
+            incidents = db.Get_Incidents(Market)
             Tincidents = self.Test_Incidents(incidents)
         else:
             Tincidents = 0
@@ -28,7 +28,7 @@ class CompanyTest(BaseTest):
     
     def Test_Registered(self,company):
         if (company["Exists"]):
-            Treg = 5
+            Treg = 1
             Tage = self.Sigmoid(company["Age"])
         else:
             Treg = 0
@@ -38,11 +38,11 @@ class CompanyTest(BaseTest):
     def Test_Incidents(self,incidents):
         OneYear = 365
         today = datetime.today()
-        returnval = 0
+        returnval = 1
         for incident in incidents:
             incidentdate = datetime.strptime(incident["IncidentDate"],"%Y-%m-%d %H:%M:%S")
             timediff = incidentdate - today
             if timediff.days > OneYear:
-                returnval = True
+                returnval = 0
         return returnval
     
