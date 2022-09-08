@@ -16,7 +16,6 @@ class UptimeEngine():
         self.db = AndroidTrustMatrix.db.db()
         self.db.Connect(username,password,host,port,database)
         self.Markets = self.db.Get_Markets()
-        self.tor_ip,self.tor_port,self.tor_pass = Config.get_tor_admin()
         self.proxies = Config.get_proxy_config()
 
     def checkup(self,market,market_module):
@@ -52,7 +51,7 @@ class UptimeEngine():
                 del(market_module)
             if down_count > 2:
                 print("Too many failed requests, cycling TOR")
-                TOR.main(self.tor_ip,self.tor_port,self.tor_pass)
+                TOR.main()
                 time.sleep(10)
                 print(TOR.getnewip(self.proxies))
                 self.db.Rollback()

@@ -112,7 +112,7 @@ def Download(app):
         adb.home(device)
         amazon_intent = f"am start -a android.intent.action.VIEW -d 'amzn://apps/android?p={app}'"
         device.shell(amazon_intent)
-        time.sleep(2)
+        time.sleep(5)
         screenshot = device.screencap()
         installable = check_installable(BytesIO(screenshot))
         if not installable:
