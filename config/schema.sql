@@ -50,7 +50,7 @@ CREATE TABLE `Companies` (
   `CompanyID` int(11) NOT NULL AUTO_INCREMENT,
   `Name` text DEFAULT NULL,
   `Exists` int(11) DEFAULT NULL,
-  `Founded` int(11) DEFAULT NULL,
+  `Founded` datetime DEFAULT NULL,
   PRIMARY KEY (`CompanyID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
@@ -111,23 +111,6 @@ CREATE TABLE `Marketplace` (
   UNIQUE KEY `name` (`name`) USING HASH
 ) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
 
-ALTER TABLE `Marketplace` ADD FOREIGN KEY (`Company`) REFERENCES `Companies` (`CompanyID`);
-
-ALTER TABLE `Marketplace` ADD FOREIGN KEY (`Domain`) REFERENCES `Domains` (`DomainID`);
-
-ALTER TABLE `Availability` ADD FOREIGN KEY (`ApplicationID`) REFERENCES `Applications` (`ApplicationID`);
-
-ALTER TABLE `Availability` ADD FOREIGN KEY (`Market`) REFERENCES `Marketplace` (`MarketID`);
-
-ALTER TABLE `Certificates` ADD FOREIGN KEY (`CertID`) REFERENCES `Certificate` (`CertID`);
-
-ALTER TABLE `Certificates` ADD FOREIGN KEY (`Domain`) REFERENCES `Domains` (`DomainID`);
-
-ALTER TABLE `Incidents` ADD FOREIGN KEY (`Company`) REFERENCES `Companies` (`CompanyID`);
-
-ALTER TABLE `Incidents` ADD FOREIGN KEY (`Incident`) REFERENCES `Incident` (`IncidentID`);
-
-ALTER TABLE `FailedRequests` ADD FOREIGN KEY (`Domain`) REFERENCES `Domains` (`DomainID`);
 
 INSERT INTO Domains (URI) VALUES ("https://play.google.com");
 INSERT INTO Domains (URI) VALUES ("https://www.amazon.com/mobile-apps");
@@ -179,3 +162,54 @@ UPDATE Marketplace SET Domain = ( SELECT DomainID FROM Domains WHERE URI = "http
 UPDATE Marketplace SET Domain = ( SELECT DomainID FROM Domains WHERE URI = "https://1mobile.market") WHERE name = '1mobile';
 UPDATE Marketplace SET Domain = ( SELECT DomainID FROM Domains WHERE URI = "http://www.mobango.com") WHERE name = 'mobango';
 UPDATE Marketplace SET Domain = ( SELECT DomainID FROM Domains WHERE URI = "https://www.mobile9.com") WHERE name = 'mobile9';
+
+INSERT into Companies VALUES (1, 'NOCOMPANY', 0 , NULL);
+INSERT into Companies VALUES (2, "Google Inc.", 1, "1998-09-04 00:00:00");
+INSERT into Companies VALUES (3, "Amazon", 1, "1994-07-05 00:00:00");
+INSERT into Companies VALUES (4, "ILLOGICAL ROBOT LLC", 1, "2012-04-23 00:00:00");
+INSERT into Companies VALUES (5, "F-DROID LIMITED", 1, "2013-02-26 00:00:00");
+INSERT into Companies VALUES (6, "Samsung", 1, "1938-03-01 00:00:00");
+INSERT into Companies VALUES (7, "APKPure", 1, "2014-01-01 00:00:00");
+INSERT into Companies VALUES (8, "Aptoide S.A.", 1, "2011-08-01 00:00:00");
+INSERT into Companies VALUES (9, "SlideME", 1, "2008-01-01 00:00:00");
+INSERT into Companies VALUES (10, "GetJar Baltic UAB.", 1, "2004-01-01 00:00:00");
+INSERT into Companies VALUES (11, "Uptodown ", 1, "2002-01-01 00:00:00");
+INSERT into Companies VALUES (12, "AppTornado GmbH", 1, "2009-11-01 00:00:00");
+INSERT into Companies VALUES (13, "Huawei", 1, "1987-09-15 00:00:00");
+INSERT into Companies VALUES (14, "Mobango", 0, "2006-01-01 00:00:00");
+INSERT into Companies VALUES (15, "Mobile9", 1, "2003-10-10 00:00:00");
+
+UPDATE Marketplace SET Company = 2 WHERE name = 'google play';
+UPDATE Marketplace SET Company = 3 WHERE name = 'amazon app store';
+UPDATE Marketplace SET Company = 4 WHERE name = 'apkmirror';
+UPDATE Marketplace SET Company = 5 WHERE name = 'fdroid';
+UPDATE Marketplace SET Company = 6 WHERE name = 'samsung galaxy app store';
+UPDATE Marketplace SET Company = 7 WHERE name = 'apkpure';
+UPDATE Marketplace SET Company = 8 WHERE name = 'aptoide';
+UPDATE Marketplace SET Company = 9 WHERE name = 'slideme';
+UPDATE Marketplace SET Company = 10 WHERE name = 'getjar';
+UPDATE Marketplace SET Company = 11 WHERE name = 'uptodown';
+UPDATE Marketplace SET Company = 12 WHERE name = 'appbrain';
+UPDATE Marketplace SET Company = 1 WHERE name = 'aurora store';
+UPDATE Marketplace SET Company = 13 WHERE name = 'huawei app gallery';
+UPDATE Marketplace SET Company = 1 WHERE name = '1mobile';
+UPDATE Marketplace SET Company = 14 WHERE name = 'mobango';
+UPDATE Marketplace SET Company = 15 WHERE name = 'mobile9';
+
+ALTER TABLE `Marketplace` ADD FOREIGN KEY (`Company`) REFERENCES `Companies` (`CompanyID`);
+
+ALTER TABLE `Marketplace` ADD FOREIGN KEY (`Domain`) REFERENCES `Domains` (`DomainID`);
+
+ALTER TABLE `Availability` ADD FOREIGN KEY (`ApplicationID`) REFERENCES `Applications` (`ApplicationID`);
+
+ALTER TABLE `Availability` ADD FOREIGN KEY (`MarketID`) REFERENCES `Marketplace` (`MarketID`);
+
+ALTER TABLE `Certificates` ADD FOREIGN KEY (`CertID`) REFERENCES `Certificate` (`CertID`);
+
+ALTER TABLE `Certificates` ADD FOREIGN KEY (`Domain`) REFERENCES `Domains` (`DomainID`);
+
+ALTER TABLE `Incidents` ADD FOREIGN KEY (`Company`) REFERENCES `Companies` (`CompanyID`);
+
+ALTER TABLE `Incidents` ADD FOREIGN KEY (`Incident`) REFERENCES `Incident` (`IncidentID`);
+
+ALTER TABLE `FailedRequests` ADD FOREIGN KEY (`Domain`) REFERENCES `Domains` (`DomainID`);
