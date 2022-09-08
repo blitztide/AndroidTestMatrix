@@ -37,7 +37,7 @@ class db():
         company = {}
         company["Exists"] = False
         CompanyID = market.Company
-        if CompanyID:
+        if not CompanyID == None:
             query = f"SELECT * FROM Companies WHERE CompanyID = {CompanyID}"
             rows = self._dict_query(query)
             for row in rows:
