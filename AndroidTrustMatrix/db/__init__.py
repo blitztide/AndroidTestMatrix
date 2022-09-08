@@ -44,7 +44,7 @@ class db():
                 company["Exists"] = row["Exists"]
                 company["Founded"] = row["Founded"]
             dateformat = "%Y-%m-%d %H:%M:%S"
-            StartDate = datetime.strptime(company["Founded"],dateformat)
+            StartDate = datetime.datetime.strptime(company["Founded"],dateformat)
             Today = datetime.today().strftime(dateformat)
             diff = Today - StartDate
             company["Age"] = diff.days
