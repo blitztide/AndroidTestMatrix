@@ -163,7 +163,7 @@ UPDATE Marketplace SET Domain = ( SELECT DomainID FROM Domains WHERE URI = "http
 UPDATE Marketplace SET Domain = ( SELECT DomainID FROM Domains WHERE URI = "http://www.mobango.com") WHERE name = 'mobango';
 UPDATE Marketplace SET Domain = ( SELECT DomainID FROM Domains WHERE URI = "https://www.mobile9.com") WHERE name = 'mobile9';
 
-INSERT into Companies VALUES (1, 'NOCOMPANY', 0 , NULL);
+INSERT into Companies VALUES (1, 'NOCOMPANY', NULL , NULL);
 INSERT into Companies VALUES (2, "Google Inc.", 1, "1998-09-04 00:00:00");
 INSERT into Companies VALUES (3, "Amazon", 1, "1994-07-05 00:00:00");
 INSERT into Companies VALUES (4, "ILLOGICAL ROBOT LLC", 1, "2012-04-23 00:00:00");
