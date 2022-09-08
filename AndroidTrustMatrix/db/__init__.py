@@ -27,7 +27,7 @@ class db():
             if "Company" in row.keys():
                 Company = row["Company"]
             else:
-                Company = 0
+                Company = None
 
             markets.append(MP.Marketplace(MarketID,name,uri,Company))
         return markets
@@ -37,7 +37,7 @@ class db():
         company = {}
         company["Exists"] = False
         CompanyID = market.Company
-        if not CompanyID == None:
+        if CompanyID:
             query = f"SELECT * FROM Companies WHERE CompanyID = {CompanyID}"
             rows = self._dict_query(query)
             for row in rows:
