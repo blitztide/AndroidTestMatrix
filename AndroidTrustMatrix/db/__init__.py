@@ -1,14 +1,26 @@
 import datetime
 import MySQLdb as my
 import AndroidTrustMatrix.Marketplaces as MP
+import AndroidTrustMatrix.config as Config
 
 class db():
     """db class abstracts all db functionality"""
 
-    def Connect(self,username, password, host, port, database):
-        """Initialise connection to database"""
-        self.db = my.connect(host,username,password,database)
-        print(f'Connected: {username}@{host}:{port}/{database}')
+    def __init__(self):
+        self.db = None
+        self.username,self.password,self.host,self.port,self.database = Config.get_db_config()
+        
+
+    def Connect(self):
+        """Initialise connection to database returns a db connection"""
+        self.db = my.connect(self.host,self.username,self.password,self.database)
+        #print(f'Connected: {self.username}@{self.host}:{self.port}/{self.database}')
+
+    def Disconnect(self):
+        """Close the connection to the database"""
+        #print("Closing database connection")
+        self.db.close()
+        self.db = None
 
     def Analysed_Recently(self,market,app):
         """Checks if app has been seen in last 7 days"""
@@ -130,41 +142,32 @@ class db():
 
     def _simple_query(self,*args,**kwargs):
         """Wrapper for simple query"""
+        if self.db == None:
+            self.Connect()
         cursor = self.db.cursor()
         cursor.execute(*args,**kwargs)
         cursor.close()
+        self.Disconnect()
         return
 
     def _list_query(self,*args,**kwargs):
         """Wrapper for list queries"""
+        if self.db == None:
+            self.Connect()
         cursor = self.db.cursor()
         cursor.execute(*args,**kwargs)
         rows = cursor.fetchall()
         cursor.close()
+        self.Disconnect()
         return rows
     
     def _dict_query(self,*args,**kwargs):
         """Wrapper for dict queries"""
+        if self.db == None:
+            self.Connect()
         cursor = self.db.cursor(my.cursors.DictCursor)
         cursor.execute(*args,**kwargs)
         rows = cursor.fetchall()
         cursor.close()
+        self.Disconnect()
         return rows
-
-    def Flush(self):
-        """Flush buffer to db"""
-        self.db.commit()
-
-    def Rollback(self):
-        """Undo changes since last flush"""
-        self.db.rollback()
-
-    def Disconnect(self):
-        """Close connection to database"""
-        if(self.db):
-            self.db.close()
-    
-    def __del__(self):
-        if (self.db):
-            self.db.commit()
-            self.db.close()
