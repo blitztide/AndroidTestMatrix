@@ -20,6 +20,9 @@ headers = {
 install_x = 505
 install_y = 558
 
+extra_perms_x = 360
+extra_perms_y = 1280
+
 def check_installbutton(file):
     """Checks a BytesIO object for presence of install button"""
     file = Image.open(file)
@@ -96,6 +99,10 @@ def Download(app):
             return None
         x,y = installable
         adb.click(device,x,y)
+        extra_perms = adb.get_focused(adb.get_activities(device))
+        # Extra prompt for dangerous permissions such as microphone
+        if extra_perms == "com.android.vending/com.google.android.finsky.billing.acquire.SheetUiBuilderHostActivity":
+            adb.click(device,extra_perms_x,extra_perms_y)
         adb.lock(device)
         if not adb.waitinstall(device,app):
             return None

@@ -54,9 +54,6 @@ class UptimeEngine():
                 TOR.main()
                 time.sleep(10)
                 print(TOR.getnewip(self.proxies))
-                self.db.Rollback()
-            else:
-                self.db.Flush()
             time.sleep(60)
 
         
