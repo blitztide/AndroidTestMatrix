@@ -22,10 +22,7 @@ class App():
     """Main app class for AndroidTrustMatrix"""
     def __init__(self):
         """Initialiser establishing connection to db and enumrating markets"""
-        print("Initialising DB")
-        username,password,host,port,database = Config.get_db_config()
         self.db = AndroidTrustMatrix.db.db()
-        self.db.Connect(username,password,host,port,database)
         self.Markets = self.db.Get_Markets()
         self.appchecks = Config.get_appcount()
         return
@@ -43,6 +40,7 @@ class App():
             markettest.Run(market)
             domaintest.Run(market)
             companytest.Run(market)
+
 
     def uptime_check():
         """Continuous loop through markets to check uptime"""
