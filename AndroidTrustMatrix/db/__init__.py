@@ -19,6 +19,7 @@ class db():
     def Disconnect(self):
         """Close the connection to the database"""
         #print("Closing database connection")
+        self.db.commit()
         self.db.close()
         self.db = None
 
@@ -43,6 +44,15 @@ class db():
 
             markets.append(MP.Marketplace(MarketID,name,uri,Company))
         return markets
+
+    def Get_Certificate(self,fingerprint):
+        """Checks if the certificate exists in the database already"""
+        query = "SELECT CertID from Certificate where Fingerprint = %s"
+        result = self._list_query(query,[fingerprint])
+        if result:
+            return True
+        else:
+            return False
     
     def Get_CompanyInfo(self,market):
         """Extracts all relevant Company Information for a given Market to return as a dict"""
@@ -77,7 +87,7 @@ class db():
 
     def Finish_Outage(self,market,enddate):
         """Close out an opened outage"""
-        query = "UPDATE FailedRequests SET EndTime = %s WHERE Domain = (Select Domain from Marketplace WHERE name = %s)"
+        query = "UPDATE FailedRequests SET EndTime = %s WHERE Domain = (Select Domain from Marketplace WHERE name = %s AND EndTime IS NULL) LIMIT 1"
         self._simple_query(query,(enddate,market))
     
     def Set_Outage(self,market,startdate):
@@ -116,6 +126,10 @@ class db():
         except:
             pass
         return
+
+    def Add_Certificate_Available(self,domain,fingerprint):
+        query = "INSERT INTO Certificates(CertID,Domain) VALUES((SELECT CertID from Certificate where Fingerprint = %s),(SELECT DomainID from Domains where URI like %s))"
+        self._simple_query(query,[bytes(fingerprint),"%"+domain+"%"])
 
     def Add_Application(self,app):
         """Add a found application to the database"""

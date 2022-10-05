@@ -34,7 +34,9 @@ class CryptoTest(BaseTest):
         sock.close()
         fingerprint = certificate.digest("sha1")
         raw_cert = dump_certificate(FILETYPE_ASN1,certificate)
-        self.db.Add_Certificate(domain,raw_cert,fingerprint)
+        if not self.db.Get_Certificate(fingerprint):
+            self.db.Add_Certificate(domain,raw_cert,fingerprint)
+        self.db.Add_Certificate_Available(domain,fingerprint)
         return certificate
         
     def get_SSL_Score(self,domain):

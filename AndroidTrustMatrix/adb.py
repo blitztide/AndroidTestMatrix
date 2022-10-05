@@ -62,7 +62,7 @@ def download_apk(device,app):
     path = get_app_path(device,app)
     if path == None:
         return None
-    print(f"app path {path}")
+    #print(f"app path {path}")
     downloaded = False
     while not downloaded == True:
         try:

@@ -99,6 +99,7 @@ def Download(app):
             return None
         x,y = installable
         adb.click(device,x,y)
+        time.sleep(2)
         extra_perms = adb.get_focused(adb.get_activities(device))
         # Extra prompt for dangerous permissions such as microphone
         if extra_perms == "com.android.vending/com.google.android.finsky.billing.acquire.SheetUiBuilderHostActivity":
