@@ -1,14 +1,27 @@
 import datetime
 import MySQLdb as my
 import AndroidTrustMatrix.Marketplaces as MP
+import AndroidTrustMatrix.config as Config
 
 class db():
     """db class abstracts all db functionality"""
 
-    def Connect(self,username, password, host, port, database):
-        """Initialise connection to database"""
-        self.db = my.connect(host,username,password,database)
-        print(f'Connected: {username}@{host}:{port}/{database}')
+    def __init__(self):
+        self.db = None
+        self.username,self.password,self.host,self.port,self.database = Config.get_db_config()
+        
+
+    def Connect(self):
+        """Initialise connection to database returns a db connection"""
+        self.db = my.connect(self.host,self.username,self.password,self.database)
+        #print(f'Connected: {self.username}@{self.host}:{self.port}/{self.database}')
+
+    def Disconnect(self):
+        """Close the connection to the database"""
+        #print("Closing database connection")
+        self.db.commit()
+        self.db.close()
+        self.db = None
 
     def Analysed_Recently(self,market,app):
         """Checks if app has been seen in last 7 days"""
@@ -31,6 +44,15 @@ class db():
 
             markets.append(MP.Marketplace(MarketID,name,uri,Company))
         return markets
+
+    def Get_Certificate(self,fingerprint):
+        """Checks if the certificate exists in the database already"""
+        query = "SELECT CertID from Certificate where Fingerprint = %s"
+        result = self._list_query(query,[fingerprint])
+        if result:
+            return True
+        else:
+            return False
     
     def Get_CompanyInfo(self,market):
         """Extracts all relevant Company Information for a given Market to return as a dict"""
@@ -82,7 +104,7 @@ class db():
 
     def Finish_Outage(self,market,enddate):
         """Close out an opened outage"""
-        query = "UPDATE FailedRequests SET EndTime = %s WHERE Domain = (Select Domain from Marketplace WHERE name = %s)"
+        query = "UPDATE FailedRequests SET EndTime = %s WHERE Domain = (Select Domain from Marketplace WHERE name = %s AND EndTime IS NULL) LIMIT 1"
         self._simple_query(query,(enddate,market))
     
     def Set_Outage(self,market,startdate):
@@ -133,6 +155,10 @@ class db():
             pass
         return
 
+    def Add_Certificate_Available(self,domain,fingerprint):
+        query = "INSERT INTO Certificates(CertID,Domain) VALUES((SELECT CertID from Certificate where Fingerprint = %s),(SELECT DomainID from Domains where URI like %s))"
+        self._simple_query(query,[bytes(fingerprint),"%"+domain+"%"])
+
     def Add_Application(self,app):
         """Add a found application to the database"""
         """Application is a dict of name, ismalware,sha1sum etc"""
@@ -158,41 +184,32 @@ class db():
 
     def _simple_query(self,*args,**kwargs):
         """Wrapper for simple query"""
+        if self.db == None:
+            self.Connect()
         cursor = self.db.cursor()
         cursor.execute(*args,**kwargs)
         cursor.close()
+        self.Disconnect()
         return
 
     def _list_query(self,*args,**kwargs):
         """Wrapper for list queries"""
+        if self.db == None:
+            self.Connect()
         cursor = self.db.cursor()
         cursor.execute(*args,**kwargs)
         rows = cursor.fetchall()
         cursor.close()
+        self.Disconnect()
         return rows
     
     def _dict_query(self,*args,**kwargs):
         """Wrapper for dict queries"""
+        if self.db == None:
+            self.Connect()
         cursor = self.db.cursor(my.cursors.DictCursor)
         cursor.execute(*args,**kwargs)
         rows = cursor.fetchall()
         cursor.close()
+        self.Disconnect()
         return rows
-
-    def Flush(self):
-        """Flush buffer to db"""
-        self.db.commit()
-
-    def Rollback(self):
-        """Undo changes since last flush"""
-        self.db.rollback()
-
-    def Disconnect(self):
-        """Close connection to database"""
-        if(self.db):
-            self.db.close()
-    
-    def __del__(self):
-        if (self.db):
-            self.db.commit()
-            self.db.close()

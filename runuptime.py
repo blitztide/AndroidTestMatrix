@@ -11,10 +11,7 @@ class UptimeEngine():
     """Main runner for Uptime Engine"""
     def __init__(self):
         """Initialise access to database and find marketplace names"""
-        print("Initialising DB")
-        username,password,host,port,database = Config.get_db_config()
         self.db = AndroidTrustMatrix.db.db()
-        self.db.Connect(username,password,host,port,database)
         self.Markets = self.db.Get_Markets()
         self.proxies = Config.get_proxy_config()
 
@@ -53,10 +50,7 @@ class UptimeEngine():
                 print("Too many failed requests, cycling TOR")
                 TOR.main()
                 time.sleep(10)
-                print(TOR.getnewip(self.proxies))
-                self.db.Rollback()
-            else:
-                self.db.Flush()
+                TOR.getnewip(self.proxies)
             time.sleep(60)
 
         

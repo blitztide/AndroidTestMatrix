@@ -29,6 +29,8 @@ class MarketTest(BaseTest):
                 self.db.Update_MarketScore(Market,Tmarket)
             #Unload module
             del(MarketModule)
+        # Resetting Available Apps
+        self.availableapps = []
 
     def CalculateAvailability(self,MarketClass):
         # appcount = 0
