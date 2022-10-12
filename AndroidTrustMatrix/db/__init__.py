@@ -46,7 +46,7 @@ class db():
                 company["Exists"] = row["Exists"]
                 company["Founded"] = row["Founded"]
             StartDate = company["Founded"]
-            Today = datetime.datetime.today()
+            Today = datetime.datetime.now()
             diff = Today - StartDate
             company["Age"] = diff.days
         return company
@@ -57,11 +57,28 @@ class db():
         incidents = self._dict_query(query)
         return incidents
 
+    def Get_FailedRequests(self,market):
+        """Returns a list of failed requests for a given market"""
+        query = f"SELECT * from FailedRequests WHERE Domain = (SELECT )"
+        requests = self._list_query(query)
+        return requests
+
     def Get_Outage(self,market):
         """Returns true if the market has previously been registered for an outage"""
         query = "SELECT COUNT(RequestID) FROM FailedRequests WHERE Domain = (Select Domain from Marketplace WHERE name = %s) AND EndTime IS NULL"
         outage = self._list_query(query,[market])
         return outage
+
+    def Get_VT_Queue(self):
+        query = "SELECT SHA256Sum FROM Applications WHERE VTCheckDate IS NULL"
+        queue = self._list_query(query)
+        return queue
+
+    def Get_VT_Aged(self):
+        """"""
+        query = "SELECT SHA256Sum FROM Applications WHERE IsMalware = False AND VTCheckDate < NOW() - INTERVAL 2 HOUR"
+        queue = self._list_query(query)
+        return queue
 
     def Finish_Outage(self,market,enddate):
         """Close out an opened outage"""
@@ -94,6 +111,17 @@ class db():
         query = f"UPDATE Marketplace SET MarketScore = {int(Tmarket)} WHERE MarketID={market.id}"
         self._simple_query(query)
         return
+    
+    def Update_Malware(self,sha256sum,value):
+        """Update database reflecting new VT score"""
+        query = "UPDATE Applications SET IsMalware = %s WHERE SHA256Sum = %s"
+        self._simple_query(query,[value,sha256sum])
+
+    def Update_VTTime(self,sha256sum):
+        """Update the database reflecting latest VT update"""
+        query = "UPDATE Applications SET VTCheckDate = %s WHERE SHA256Sum = %s"
+        checktime = datetime.datetime.now()
+        self._simple_query(query,[checktime,sha256sum])
 
     def Add_Certificate(self,domain,certificate,fingerprint):
         """Add a found certificate to the database"""
@@ -109,7 +137,7 @@ class db():
         """Add a found application to the database"""
         """Application is a dict of name, ismalware,sha1sum etc"""
         print(f"New Application {app['pkg_name']},{app['isMalware']}")
-        addedtime = datetime.date.today()
+        addedtime = datetime.datetime.now()
         query = "INSERT into Applications(PackageName,Version,isMalware,MD5Sum,SHA1Sum,SHA256Sum,AppDate,AddedDate) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)"
         self._simple_query(query,(app["pkg_name"],app["Version_Name"],app["isMalware"],app["md5sum"],app["sha1sum"],app["sha256sum"],app["AppDate"],addedtime))
         return

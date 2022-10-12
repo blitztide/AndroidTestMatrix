@@ -1,5 +1,12 @@
 import sys
 import importlib
+import AndroidTrustMatrix.config as Config
+import requests
+from AndroidTrustMatrix.Downloader import Plain_Get
+from bs4 import BeautifulSoup
+import TOR.tor
+
+
 
 def eprint(*args, **kwargs):
     """Wrapper over print to write to stderr"""
@@ -92,3 +99,36 @@ class AndroidXMLDecompress():
         if c < -2147483648 or c > 2147483647:
             return int(-1)
         return c
+
+def CheckVT(sha256sum):
+        """Checks filehash on VirusTotal, if not seen return None, otherwise return detections"""
+        url = f"https://virustotal.com/old-browsers/file/{sha256sum}"
+        # Common User agent to hide web scraping
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
+        }
+        request_worked = False
+        proxies = Config.get_proxy_config()
+        response = Plain_Get(url,headers=headers)
+        print(response)
+        while request_worked == False:
+            # Working Request
+            if response.status_code == requests.status_codes.codes.ok:
+                soup = BeautifulSoup(response.text, 'html.parser')
+                detections = soup.find(id="detections")
+                total = int(detections.get_text().strip().split("/")[0])
+                request_worked = True
+            # Request blocked by IP
+            elif response.status_code == 403:
+                print("VT: Forbidden")
+                TOR.tor.main()
+            # Item not found
+            else:
+                #print("VT: Unknown")
+                return None
+
+        threshold = 3
+        if total > threshold:
+            return True
+        else:
+            return False

@@ -34,6 +34,8 @@ class CryptoTest(BaseTest):
         sock.close()
         fingerprint = certificate.digest("sha1")
         raw_cert = dump_certificate(FILETYPE_ASN1,certificate)
+        
+        # Todo Check for existing Certificate
         self.db.Add_Certificate(domain,raw_cert,fingerprint)
         return certificate
         

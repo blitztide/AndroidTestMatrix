@@ -11,6 +11,7 @@ class TestRunner():
     def Run(self):
         failcount = 0
         for test in self.tests:
+            print(f"Starting Test {test.Name()}")
             try:
                 test.Run()
                 print(f"Test {test.Name()} Passed")
@@ -35,6 +36,14 @@ class TestRunner():
                 except:
                     print(f"Unable to import {test}")
         return
+
+def SingleTest(testfile):
+    modulename = 'tests.' + testfile
+    module = importlib.import_module(modulename,package=None)
+    try:
+        module.Run()
+    except Exception as e:
+        print(f"Test {module.Name()} Failed {e}")    
 
 if __name__ == "__main__":
     TR = TestRunner()
