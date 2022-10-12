@@ -23,9 +23,8 @@ class App():
     def __init__(self):
         """Initialiser establishing connection to db and enumrating markets"""
         print("Initialising DB")
-        username,password,host,port,database = Config.get_db_config()
         self.db = AndroidTrustMatrix.db.db()
-        self.db.Connect(username,password,host,port,database)
+        self.db.Connect()
         self.Markets = self.db.Enrich_Market(Config.get_markets())
         self.appchecks = Config.get_appcount()
         return
