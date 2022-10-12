@@ -128,9 +128,6 @@ def isUP():
     """Check connection to play.google.com and to phone"""
     #Checking google play
 
-    # Added due to ban on play
-    return False
-
     try:
         Plain_Head("https://play.google.com",proxies=proxies,headers=headers,timeout=10)
     except requests.exceptions.Timeout:

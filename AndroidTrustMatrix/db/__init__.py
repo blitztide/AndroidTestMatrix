@@ -28,6 +28,22 @@ class db():
         query = ""
         return False
 
+    def Enrich_Market(self,markets):
+        """Extracts extra information on a market name and returns a Marketplace dict"""
+        EnrichedMarkets = []
+        query = "SELECT Marketplace.MarketID,Marketplace.name,Domains.URI,Marketplace.Company FROM Marketplace INNER JOIN Domains ON Domains.DomainID=Marketplace.Domain WHERE Marketplace.name = %s;"
+        for market in markets:
+            row = self._dict_query(query,[market])
+            MarketID = row[0]["MarketID"]
+            name = row[0]["name"]
+            uri = row[0]["URI"]
+            if "Company" in row[0].keys():
+                Company = row[0]["Company"]
+            else:
+                Company = None
+            EnrichedMarkets.append(MP.Marketplace(MarketID,name,uri,Company))
+        return EnrichedMarkets
+
     def Get_Markets(self):
         """Extracts all known Marketplaces from DB and returns Marketplace objects"""
         query = "SELECT Marketplace.MarketID,Marketplace.name,Domains.URI,Marketplace.Company FROM Marketplace INNER JOIN Domains ON Domains.DomainID=Marketplace.Domain"

@@ -1,4 +1,5 @@
 from configparser import ConfigParser
+import AndroidTrustMatrix.db
 
 
 config = ConfigParser()
@@ -37,8 +38,8 @@ def get_adb_config():
 
 def get_markets():
     marketstr = config.get('Markets','enabled')
-    print(marketstr)
-    return marketstr
+    markets = marketstr.split(',')
+    return markets
 
 def get_temp_apk_path():
     path = config.get('temp','apk_path')

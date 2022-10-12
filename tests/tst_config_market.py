@@ -5,5 +5,5 @@ def Name():
     return "Market Config"
 
 def Run():
-    Config.get_markets()
+    print(Config.get_markets())
     return
