@@ -87,6 +87,7 @@ class MarketTest(BaseTest):
         # Get all downtime events
         # For loop through downtime events since project start
         # Calculate lazy percentage
+        #db.get_FailedRequests(market)
         totaltime = 100
         actualtime = 100
         Tuptime = actualtime/totaltime

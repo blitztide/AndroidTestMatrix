@@ -13,6 +13,7 @@ CREATE TABLE `Applications` (
   `SHA256Sum` text DEFAULT NULL,
   `AppDate` datetime DEFAULT NULL,
   `AddedDate` datetime DEFAULT NULL,
+  `VTCheckDate` datetime DEFAULT NULL,
   PRIMARY KEY (`ApplicationID`),
   KEY `hash` (`SHA256Sum`(1024))
 ) ENGINE=InnoDB AUTO_INCREMENT=20033206 DEFAULT CHARSET=utf8mb3;

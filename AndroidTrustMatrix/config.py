@@ -35,6 +35,11 @@ def get_adb_config():
     port = int(config.get('adb','port'))
     return (host,port)
 
+def get_markets():
+    marketstr = config.get('Markets','enabled')
+    print(marketstr)
+    return marketstr
+
 def get_temp_apk_path():
     path = config.get('temp','apk_path')
     return path
@@ -44,6 +49,11 @@ def get_tor_admin():
     port = int(config.get('tor','port'))
     password = config.get('tor','auth')
     return (ip,port,password)
+
+def get_project_start():
+    date = config.get('Uptime','projectstart')
+    print(f"Project start: {date}")
+    return date
 
 def get_appcount():
     count = config.get('AndroidTestMatrix','appcount')
