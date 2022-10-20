@@ -76,6 +76,10 @@ class MarketTest(BaseTest):
                 else:
                     print(f"Package {Result['pkg_name']} detected as Clean")
                 self.db.Add_Available(self.market,Result)
+        # Use DB to get counts
+        Checked = self.db.Get_Market_App_Count(self.market)
+        Malicious = self.db.Get_Market_Malware_Count(self.market)
+        print(f"{self.market} has {Checked} Applications which {Malicious} are Malware")
         try:
             Tmalware = 1 - (Malicious/Checked)
         except:

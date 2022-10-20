@@ -43,6 +43,18 @@ class db():
                 Company = None
             EnrichedMarkets.append(MP.Marketplace(MarketID,name,uri,Company))
         return EnrichedMarkets
+    
+    def Get_Market_App_Count(self,market):
+        """Return a count of applications available for a given market"""
+        query = "Select count(*) FROM Availability INNER JOIN Marketplace ON Availability.MarketID=Marketplace.MarketID INNER JOIN Applications ON Availability.ApplicationID=Applications.ApplicationID WHERE Marketplace.name = %s"
+        value = self._simple_query(query,[market])
+        return value[0][0]
+
+    def Get_Market_Malware_Count(self,market):
+        """Return a count of applications which are malicious for a given market"""
+        query = "Select count(*) FROM Availability INNER JOIN Marketplace ON Availability.MarketID=Marketplace.MarketID INNER JOIN Applications ON Availability.ApplicationID=Applications.ApplicationID WHERE Marketplace.name = %s AND Applications.isMalware = True"
+        value = self._simple_query(query,[market])
+        return value[0][0]
 
     def Get_Markets(self):
         """Extracts all known Marketplaces from DB and returns Marketplace objects"""
@@ -204,9 +216,10 @@ class db():
             self.Connect()
         cursor = self.db.cursor()
         cursor.execute(*args,**kwargs)
+        value = cursor.fetchall()
         cursor.close()
         self.Disconnect()
-        return
+        return value
 
     def _list_query(self,*args,**kwargs):
         """Wrapper for list queries"""

@@ -6,9 +6,8 @@ from AndroidTrustMatrix.util import CheckVT
 
 
 def update_db_vt_records():
-    username,password,host,port,database = Config.get_db_config()
     db = AndroidTrustMatrix.db.db()
-    db.Connect(username,password,host,port,database)
+    db.Connect()
     while(True):
         unscanned = db.Get_VT_Queue()
         aged = db.Get_VT_Aged()
