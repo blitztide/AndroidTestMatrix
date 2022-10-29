@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import time
 import AndroidTrustMatrix.db
-import AndroidTrustMatrix.config as Config
 from AndroidTrustMatrix.util import CheckVT
 
 
@@ -15,7 +14,7 @@ def update_db_vt_records():
         if applications:
             for application in applications:
                 sha256sum = application[0]
-                isMalware = AndroidTrustMatrix.util.CheckVT(sha256sum)
+                isMalware = CheckVT(sha256sum)
                 print(f"{sha256sum} - {isMalware}")
                 if isMalware:
                     # Set db to reflect true
@@ -25,7 +24,6 @@ def update_db_vt_records():
                     # No change as undetected *Try again later
                     db.Update_VTTime(sha256sum)
                     pass
-                time.sleep(5)
         time.sleep(60)
 
 

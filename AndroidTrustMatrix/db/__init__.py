@@ -201,6 +201,15 @@ class db():
         self._simple_query(query,(Result["sha256sum"],Result["md5sum"],MarketClass.id))
         return
     
+    def Check_Available(self, result):
+        """Checks the result dict against the database to see if we have seen this in Availability"""
+        query = "SELECT Availability.AvailabilityID FROM Availability INNER JOIN Marketplace ON Availability.MarketID=Marketplace.MarketID INNER JOIN Applications ON Availability.ApplicationID=Applications.ApplicationID WHERE Marketplace.name = %s AND Applications.PackageName = %s AND Applications.SHA256Sum = %s"
+        results = self._list_query(query,(result["market"],result["pkg_name"],result["sha256sum"]))
+        if len(results) > 0:
+            return True
+        else:
+            return False
+
     def Check_Exists(self, result):
         """Checks the result dict against the database"""
         query = "SELECT * FROM Applications WHERE SHA256Sum = %s AND MD5Sum = %s"

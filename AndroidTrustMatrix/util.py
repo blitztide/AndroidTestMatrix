@@ -1,7 +1,7 @@
 import sys
 import importlib
 import AndroidTrustMatrix.config as Config
-import requests
+import time
 from AndroidTrustMatrix.Downloader import Plain_Get
 from bs4 import BeautifulSoup
 import TOR.tor
@@ -109,11 +109,12 @@ def CheckVT(sha256sum):
         }
         request_worked = False
         proxies = Config.get_proxy_config()
-        response = Plain_Get(url,headers=headers)
-        print(response)
+        response = Plain_Get(url,headers=headers,proxies=proxies)
+
         while request_worked == False:
+            print(response)
             # Working Request
-            if response.status_code == requests.status_codes.codes.ok:
+            if response.status_code == 200:
                 soup = BeautifulSoup(response.text, 'html.parser')
                 detections = soup.find(id="detections")
                 total = int(detections.get_text().strip().split("/")[0])
@@ -123,9 +124,13 @@ def CheckVT(sha256sum):
                 print("VT: Forbidden")
                 TOR.tor.main()
             # Item not found
+            elif response.status_code == 429:
+                TOR.tor.main()
+                time.sleep(5)
             else:
                 #print("VT: Unknown")
                 return None
+            response = Plain_Get(url,headers=headers,proxies=proxies)
 
         threshold = 3
         if total > threshold:

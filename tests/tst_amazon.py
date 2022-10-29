@@ -1,4 +1,4 @@
-import AndroidTrustMatrix.Tests.Markets.mkt_googleplay as az
+import AndroidTrustMatrix.Tests.Markets.mkt_amazonappstore as az
 # Default test to ensure that the test framework runs
 def Name():
     return "Amazon"
