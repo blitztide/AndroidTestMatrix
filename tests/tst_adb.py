@@ -12,6 +12,11 @@ def Run():
     host,port = Config.get_adb_config()
     client = AdbClient(host,port)
     devices = client.devices()
+
+    if devices == []:
+        print("No Devices!")
+        return False
+
     for device in devices:
         print(f"Testing device: {device.serial}")
         assert adb.hello(device) == "hello"
@@ -25,4 +30,4 @@ def Run():
         # Check ADB pull
         adb.download_apk(device,"com.android.vending")
         
-    return
+    return True

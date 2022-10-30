@@ -52,7 +52,8 @@ class App():
         apps = []
         fp =  open("config/apps")
         for line in fp.readlines():
-                apps.append(line.strip())
+                if not line[0] == '#':
+                    apps.append(line.strip())
         random.shuffle(apps)
         fp.close()
         return apps[0:n]

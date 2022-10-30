@@ -101,6 +101,10 @@ def Download(app):
     # check all devices for app
     app_location = None
     devices = client.devices()
+    
+    # Handle no devices available
+    if devices == []:
+        return None
     for device in devices:
         if device.is_installed(app):
             print(f"{device} has {app}")

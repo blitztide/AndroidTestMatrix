@@ -112,7 +112,6 @@ def CheckVT(sha256sum):
         response = Plain_Get(url,headers=headers,proxies=proxies)
 
         while request_worked == False:
-            print(response)
             # Working Request
             if response.status_code == 200:
                 soup = BeautifulSoup(response.text, 'html.parser')
@@ -121,7 +120,6 @@ def CheckVT(sha256sum):
                 request_worked = True
             # Request blocked by IP
             elif response.status_code == 403:
-                print("VT: Forbidden")
                 TOR.tor.main()
             # Item not found
             elif response.status_code == 429:
