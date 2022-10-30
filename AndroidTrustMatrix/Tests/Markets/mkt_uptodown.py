@@ -27,19 +27,22 @@ def Search(app):
     itemlist = soup.find("div",attrs={"id":"content-list"})
     if itemlist == None:
         return False
-    itemlist.find_all("div",attrs={"class":"item"})
+    itemlist = itemlist.find_all("div",attrs={"class":"item"})
 
     # Iterate over search results
     for item in itemlist:
         #Trim location.href and trailing quote
-        if isinstance(item,NavigableString):
-            # Not an item we are looking for
+        # if isinstance(item,NavigableString):
+        #     # Not an item we are looking for
+        #     continue
+        name_div = item.find("a")
+        if name_div == None:
             continue
 
-        if not item.has_attr('onclick'):
-            # Not the item we are searching for
-            continue
-        new_url = item.attrs['onclick'][15:-1]
+        if not name_div.has_attr('href'):
+             # Not the item we are searching for
+             continue
+        new_url = name_div.attrs['href']
         # Check if new page is the actual app page
         potential_app = Plain_Get(new_url,proxies=proxies,headers=headers)
         soup = BeautifulSoup(potential_app.text,'html.parser')

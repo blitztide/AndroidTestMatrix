@@ -25,8 +25,19 @@ class db():
 
     def Analysed_Recently(self,market,app):
         """Checks if app has been seen in last 7 days"""
-        query = ""
-        return False
+        query = "SELECT Applications.AddedDate,Applications.VTCheckDate From Applications INNER JOIN Availability ON Availability.ApplicationID=Applications.ApplicationID INNER JOIN Marketplace ON Availability.MarketID = Marketplace.MarketID WHERE Marketplace.name = %s AND Applications.PackageName = %s ORDER BY Applications.AddedDate DESC LIMIT 1;"
+        results = self._dict_query(query,(market,app))
+        # Check for empty set
+        if results == ():
+            return False
+        results = results[0]
+        currenttime = datetime.datetime.now()
+        addedtime = results["AddedDate"]
+        diff = currenttime - addedtime
+        print(f"{app} added: {addedtime} which is {diff.days} days ago")
+        if diff.days >= 7:
+            return False
+        return True
 
     def Enrich_Market(self,markets):
         """Extracts extra information on a market name and returns a Marketplace dict"""

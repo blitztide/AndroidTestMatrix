@@ -9,6 +9,7 @@ alias deactivate 'test $?_OLD_VIRTUAL_PATH != 0 && setenv PATH "$_OLD_VIRTUAL_PA
 deactivate nondestructive
 
 setenv VIRTUAL_ENV "/usr/home/david/AndroidTrustMatrix"
+setenv PYTHONWARNINGS "ignore: Unverified HTTPS Request"
 
 set _OLD_VIRTUAL_PATH="$PATH"
 setenv PATH "$VIRTUAL_ENV/bin:$PATH"

@@ -74,7 +74,7 @@ def Search(app):
             # Price not found
             continue
         if not price_result.text.strip() == "Free Download":
-            print(f"App found but price is: {price_result.contents}")
+            print(f"App found but price is: {price_result.contents.strip()}")
             return False
         # Our app exists and is free
         return True
