@@ -16,7 +16,6 @@ headers = {
 def Search(app):
     """Search for app in store and return True if available"""
     searchurl = basesearch.format(app)
-    print(f"Searching: {searchurl}")
     response = requests.get(searchurl,proxies=proxies,headers=headers)
     if response.status_code == requests.status_codes.codes.ok:
         soup = BeautifulSoup(response.text,'html.parser')
@@ -26,6 +25,7 @@ def Search(app):
             print(baseurl + apps['href'])
             return True
         else:
+            print(f"Unable to find package {app}")
             return False
 
 def Download(app):
