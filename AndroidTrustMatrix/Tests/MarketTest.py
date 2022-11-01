@@ -34,19 +34,15 @@ class MarketTest(BaseTest):
         self.availableapps = []
 
     def CalculateAvailability(self,MarketClass):
-        # appcount = 0
-        # For application in applicationlist:
-        #   exists = module[Market].search()
-        #   appcount += exists
+        # DB lookup for each value
         # Tavail = appcount/TotalApps
         # return Tavail
-        appcount = 0
-        totalapps = 0
         for application in self.searchapps:
-            totalapps += 1
             if MarketClass.Search(application):
                 self.availableapps.append(application)
-                appcount += 1
+        
+        appcount = self.db.Get_Market_App_Count(self.market)
+        totalapps = self.db.Get_Total_Apps()
         Tavail = appcount/totalapps
         return Tavail
 

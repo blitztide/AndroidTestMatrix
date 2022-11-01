@@ -35,7 +35,7 @@ class db():
         addedtime = results["AddedDate"]
         diff = currenttime - addedtime
         print(f"{app} added: {addedtime} which is {diff.days} days ago")
-        if diff.days >= 7:
+        if diff.days >= 30:
             return False
         return True
 
@@ -57,7 +57,13 @@ class db():
     
     def Get_Market_App_Count(self,market):
         """Return a count of applications available for a given market"""
-        query = "Select count(*) FROM Availability INNER JOIN Marketplace ON Availability.MarketID=Marketplace.MarketID INNER JOIN Applications ON Availability.ApplicationID=Applications.ApplicationID WHERE Marketplace.name = %s"
+        query = "Select count(distinct Applications.PackageName) FROM Availability INNER JOIN Marketplace ON Availability.MarketID=Marketplace.MarketID INNER JOIN Applications ON Availability.ApplicationID=Applications.ApplicationID WHERE Marketplace.name = %s"
+        value = self._simple_query(query,[market])
+        return value[0][0]
+
+    def Get_Total_Apps(self):
+        """Return a count of applications available for a given market"""
+        query = "Select count(distinct PackageName) FROM Applications"
         value = self._simple_query(query,[market])
         return value[0][0]
 
