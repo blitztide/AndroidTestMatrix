@@ -19,6 +19,7 @@ class CompanyTest(BaseTest):
             Tincidents = 0
         (Treg,Tage) = self.Test_Registered(company)
         Tcompany = self.Calculate_Score(Treg,Tage,Tincidents)
+        print(f"{Market} Treg: {Treg} Tage: {Tage} Tincidents: {Tincidents} Tcompany: {Tcompany}")
         db.Update_CompanyScore(Market,Tcompany)
         
 

@@ -22,7 +22,6 @@ def Search(app):
         searchresults = soup.find("div",{"class":"node-mobileapp"})
         if searchresults:
             apps = searchresults.find("a")
-            print(baseurl + apps['href'])
             return True
         else:
             print(f"Unable to find package {app}")

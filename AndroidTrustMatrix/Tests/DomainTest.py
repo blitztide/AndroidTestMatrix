@@ -26,6 +26,7 @@ class DomainTest(BaseTest):
             Tcrypto = self.CheckSSL(domain)
         Tc2 = self.CheckC2(domain)
         Tdomain = self.CalculateScore(Tc2,Tcrypto,Tage)
+        print(f"{Market} Tc2: {Tc2} Tcrypto: {Tcrypto} Tage: {Tage} Tdomain: {Tdomain}")
         db.Update_DomainScore(Market,Tdomain)
     
     def CheckSSL(self,domain):

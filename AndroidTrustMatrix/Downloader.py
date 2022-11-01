@@ -40,7 +40,7 @@ def Plain_Head(*args, **kwargs):
     # You will download!
     while request_worked == False:
         try:
-            response = requests.get(*args,**kwargs)
+            response = requests.head(*args,**kwargs)
             request_worked = True
         except Exception as e:
             print(f"Error performing Head request: {e}")
@@ -54,7 +54,7 @@ def Plain_Post(*args, **kwargs):
     # You will download!
     while request_worked == False:
         try:
-            response = requests.get(*args,**kwargs)
+            response = requests.post(*args,**kwargs)
             request_worked = True
         except Exception as e:
             print(f"Error performing Post request: {e}")

@@ -6,4 +6,5 @@ def Name():
 def Run():
     az.Search("com.king.candycrushsodasaga")
     az.Search("com.termux")
+    az.Search("com.mojang.minecraftpe")
     return

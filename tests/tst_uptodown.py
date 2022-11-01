@@ -6,4 +6,5 @@ def Name():
 def Run():
     u2d.Search("com.amazon.kindle")
     u2d.Search("com.termux")
+    u2d.Download("com.amazon.kindle")
     return

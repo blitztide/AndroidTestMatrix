@@ -26,6 +26,7 @@ class MarketTest(BaseTest):
                 Tmalware = self.MalwareCheck(MarketModule)
                 Tuptime = self.CalculateUptime(Market)
                 Tmarket = self.CalculateScore(Tuptime,Tavail,Tmalware)
+                print(f"{Market} Tavail: {Tavail} Tmalware: {Tmalware} Tuptime: {Tuptime} Tmarket: {Tmarket}")
                 self.db.Update_MarketScore(Market,Tmarket)
             #Unload module
             del(MarketModule)
