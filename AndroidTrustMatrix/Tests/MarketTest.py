@@ -37,9 +37,18 @@ class MarketTest(BaseTest):
         # DB lookup for each value
         # Tavail = appcount/TotalApps
         # return Tavail
+        counter = 0
         for application in self.searchapps:
-            if MarketClass.Search(application):
+            print(f"Searching app {counter} of {len(self.searchapps)}")
+            counter += 1
+            # Check if it has been seen recently, to speed up subsequent runs
+            seen = self.db.Analysed_Recently(self.market,application)
+            if seen:
                 self.availableapps.append(application)
+                continue
+
+            if MarketClass.Search(application):
+                    self.availableapps.append(application)
         
         appcount = self.db.Get_Market_App_Count(self.market)
         totalapps = self.db.Get_Total_Apps()
@@ -56,8 +65,12 @@ class MarketTest(BaseTest):
         Checked = 0
         Malicious = 0
         Tmalware = 0
+        total_available = len(self.availableapps)
+        counter = 0
         for application in self.availableapps:
+            print(f"Analyzing app {counter} of {total_available}")
             Checked += 1
+            counter += 1
             if self.db.Analysed_Recently(self.market,application):
                 continue
             apk = MarketClass.Download(application)
@@ -78,6 +91,7 @@ class MarketTest(BaseTest):
                     else:
                         pass
                 self.db.Add_Available(self.market,Result)
+            
         # Use DB to get counts
         Checked = self.db.Get_Market_App_Count(self.market)
         Malicious = self.db.Get_Market_Malware_Count(self.market)

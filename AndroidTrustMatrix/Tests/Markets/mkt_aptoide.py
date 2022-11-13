@@ -21,6 +21,7 @@ def Search(app):
         results = jdata['datalist']
         for item in results['list']:
             if item['package'] == app:
+                print(f"Located package: {app}")
                 return True
     print(f"Unable to locate package: {app}")
     return False
