@@ -59,8 +59,8 @@ class DomainTest(BaseTest):
 
     def CalculateScore(self,Tc2,Tcrypto,Tage):
         # Scaling factors
-        a = 5
-        b = 5
+        a = 3
+        b = 7
         Tdomain = Tc2 * ((a * Tage) + (b*Tcrypto))
         return Tdomain
     

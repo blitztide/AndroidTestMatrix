@@ -114,8 +114,8 @@ class MarketTest(BaseTest):
         return Tuptime
 
     def CalculateScore(self,Tuptime,Tavailability,Tmalware):
-        a = 3
-        b = 3
-        c = 4
+        a = 1
+        b = 4
+        c = 5
         Tmarket = (a*Tuptime)+(b*Tavailability)+(c*Tmalware)
         return Tmarket
